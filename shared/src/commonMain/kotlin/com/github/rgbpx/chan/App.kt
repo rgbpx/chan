@@ -20,22 +20,29 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.map
 
 import chan.shared.generated.resources.Res
 import chan.shared.generated.resources.compose_multiplatform
+import com.github.rgbpx.chan.settings.AppSettings
 import com.github.rgbpx.chan.settings.AppSettingsRepository
 import com.github.rgbpx.chan.ui.LoadingScreen
 import com.github.rgbpx.chan.ui.MainScreen
 import com.github.rgbpx.chan.ui.OnboardingScreen
+import com.github.rgbpx.chan.ui.SettingsUiState
 
 @Composable
 fun App(appSettingsRepository: AppSettingsRepository) {
-    val settings by appSettingsRepository.settings.collectAsState(initial = null)
+    val uiState by remember(appSettingsRepository) {
+        appSettingsRepository.settings.map<AppSettings, SettingsUiState> {
+            SettingsUiState.Loaded(it)
+        }
+    }.collectAsState(initial = SettingsUiState.Loading)
     val scope = rememberCoroutineScope()
 
-    when (val currentSettings = settings) {
-        null -> LoadingScreen()
-        else -> if (currentSettings.firstLaunch) {
+    when (val state = uiState) {
+        is SettingsUiState.Loading -> LoadingScreen()
+        is SettingsUiState.Loaded -> if (state.settings.firstLaunch) {
             OnboardingScreen(onFinished = {
                 scope.launch { appSettingsRepository.setFirstLaunchCompleted() }
             })
@@ -44,54 +51,3 @@ fun App(appSettingsRepository: AppSettingsRepository) {
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun App(appSettingsRepository: AppSettingsRepository) {
-//    val settings by appSettingsRepository.settings.collectAsState(initial = null)
-//    val scope = rememberCoroutineScope()
-//
-//    val currentSettings = settings ?: return // nothing loaded from disk yet — show nothing/a splash here
-//
-////    if (currentSettings.firstLaunch) {
-////        OnboardingScreen(
-////            onFinished = {
-////                scope.launch { appSettingsRepository.setFirstLaunchCompleted() }
-////            }
-////        )
-////    } else {
-////        MainScreen()
-////    }
-//
-//
-//    MaterialTheme {
-//        var showContent by remember { mutableStateOf(false) }
-//        Column(
-//            modifier = Modifier
-//                .background(MaterialTheme.colorScheme.primaryContainer)
-//                .safeContentPadding()
-//                .fillMaxSize(),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//        ) {
-//            Button(onClick = { showContent = !showContent }) {
-//                Text("Click me!")
-//            }
-//            AnimatedVisibility(showContent) {
-//                val greeting = remember { Greeting().greet() }
-//                Column(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                ) {
-//                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-//                    Text("Compose: $greeting")
-//                }
-//            }
-//
-//            if (currentSettings.firstLaunch) {
-//                Text("First")
-//            } else {
-//                Text("Not first")
-//            }
-//        }
-//    }
-//}
