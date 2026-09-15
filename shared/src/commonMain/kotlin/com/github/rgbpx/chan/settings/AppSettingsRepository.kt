@@ -2,7 +2,12 @@ package com.github.rgbpx.chan.settings
 
 import androidx.datastore.core.DataStore
 import kotlinx.coroutines.flow.Flow
+import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metro.Inject
+import com.github.rgbpx.chan.di.AppScope
 
+@SingleIn(AppScope::class)
+@Inject
 class AppSettingsRepository(
     private val dataStore: DataStore<AppSettings>,
 ) {
