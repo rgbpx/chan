@@ -32,12 +32,15 @@ import com.github.rgbpx.chan.ui.OnboardingScreen
 import com.github.rgbpx.chan.ui.SettingsUiState
 
 @Composable
-fun App(appSettingsRepository: AppSettingsRepository) {
+fun App(appContainer: AppContainer) {
+    val appSettingsRepository = appContainer.appSettingsRepository
+
     val uiState by remember(appSettingsRepository) {
         appSettingsRepository.settings.map<AppSettings, SettingsUiState> {
             SettingsUiState.Loaded(it)
         }
     }.collectAsState(initial = SettingsUiState.Loading)
+
     val scope = rememberCoroutineScope()
 
     when (val state = uiState) {

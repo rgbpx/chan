@@ -12,10 +12,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        val appSettingsRepository = AppSettingsRepository(createDataStore(applicationContext))
-
         setContent {
-            App(appSettingsRepository)
+            App(AppContainer(applicationContext))
         }
     }
 }
