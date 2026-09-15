@@ -9,8 +9,6 @@ import okio.Path
 internal const val APP_NAME = "chan"
 internal const val DATA_STORE_FILE_NAME = "settings.json"
 
-expect fun createDataStore(): DataStore<AppSettings>
-
 internal fun createDataStore(producePath: () -> Path): DataStore<AppSettings> =
     DataStoreFactory.create(
         storage = OkioStorage(

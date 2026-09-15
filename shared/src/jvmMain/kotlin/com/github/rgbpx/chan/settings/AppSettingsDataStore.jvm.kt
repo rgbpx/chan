@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import okio.FileSystem
 import okio.Path.Companion.toPath
 
-actual fun createDataStore(): DataStore<AppSettings> = createDataStore(
+fun createDataStore(): DataStore<AppSettings> = createDataStore(
     producePath = {
         val homeDir = System.getenv("HOME")
         val configDir = System.getenv("XDG_CONFIG_HOME")
