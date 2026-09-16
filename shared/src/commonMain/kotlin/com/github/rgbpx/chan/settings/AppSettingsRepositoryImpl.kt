@@ -1,9 +1,9 @@
 package com.github.rgbpx.chan.settings
 
 import androidx.datastore.core.DataStore
+import com.github.rgbpx.chan.di.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
-import com.github.rgbpx.chan.di.AppScope
 
 @SingleIn(AppScope::class)
 @Inject
