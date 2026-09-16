@@ -23,9 +23,6 @@ kotlin {
         androidResources {
             enable = true
         }
-        withHostTest {
-            isIncludeAndroidResources = true
-        }
     }
 
     sourceSets {
@@ -46,9 +43,6 @@ kotlin {
             implementation(libs.okio)
             implementation(libs.androidx.datastore.core.okio)
             api(libs.androidx.datastore.core)
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
     }
 }
