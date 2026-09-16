@@ -21,11 +21,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.catch
 
 import chan.shared.generated.resources.Res
 import chan.shared.generated.resources.compose_multiplatform
 import com.github.rgbpx.chan.settings.AppSettings
 import com.github.rgbpx.chan.settings.AppSettingsRepository
+import com.github.rgbpx.chan.ui.ErrorScreen
 import com.github.rgbpx.chan.ui.LoadingScreen
 import com.github.rgbpx.chan.ui.MainScreen
 import com.github.rgbpx.chan.ui.OnboardingScreen
@@ -34,15 +36,20 @@ import com.github.rgbpx.chan.ui.SettingsUiState
 @Composable
 fun App(appSettingsRepository: AppSettingsRepository) {
     val uiState by remember(appSettingsRepository) {
-        appSettingsRepository.settings.map<AppSettings, SettingsUiState> {
-            SettingsUiState.Loaded(it)
-        }
+        appSettingsRepository.settings
+            .map<AppSettings, SettingsUiState> {
+                SettingsUiState.Loaded(it)
+            }
+            .catch {
+                emit(SettingsUiState.Error(it))
+            }
     }.collectAsState(initial = SettingsUiState.Loading)
 
     val scope = rememberCoroutineScope()
 
     when (val state = uiState) {
         is SettingsUiState.Loading -> LoadingScreen()
+        is SettingsUiState.Error -> ErrorScreen(state.throwable)
         is SettingsUiState.Loaded -> if (state.settings.firstLaunch) {
             OnboardingScreen(onFinished = {
                 scope.launch { appSettingsRepository.setFirstLaunchCompleted() }
