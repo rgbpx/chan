@@ -7,12 +7,16 @@ import okio.BufferedSource
 
 internal object AppSettingsSerializer : OkioSerializer<AppSettings> {
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
     override val defaultValue: AppSettings = AppSettings()
 
     override suspend fun readFrom(source: BufferedSource): AppSettings =
-        Json.decodeFromString(source.readUtf8())
+        json.decodeFromString(source.readUtf8())
 
     override suspend fun writeTo(t: AppSettings, sink: BufferedSink) {
-        sink.writeUtf8(Json.encodeToString(t))
+        sink.writeUtf8(json.encodeToString(t))
     }
 }
