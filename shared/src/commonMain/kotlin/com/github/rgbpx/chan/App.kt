@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import co.touchlab.kermit.Logger
 import com.github.rgbpx.chan.settings.AppSettings
 import com.github.rgbpx.chan.settings.AppSettingsRepository
 import com.github.rgbpx.chan.ui.ErrorScreen
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+private val log = Logger.withTag("App")
+
 @Composable
 fun App(appSettingsRepository: AppSettingsRepository) {
     val uiState by remember(appSettingsRepository) {
@@ -24,6 +27,7 @@ fun App(appSettingsRepository: AppSettingsRepository) {
                 SettingsUiState.Loaded(it)
             }
             .catch {
+                log.e(it) { "Failed to load app settings" }
                 emit(SettingsUiState.Error(it))
             }
     }.collectAsState(initial = SettingsUiState.Loading)
