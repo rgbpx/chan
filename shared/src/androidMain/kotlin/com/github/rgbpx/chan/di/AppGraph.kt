@@ -14,9 +14,11 @@ import dev.zacsweers.metro.Provides
 interface AppGraph {
     val appSettingsRepository: AppSettingsRepository
 
+    @Suppress("unused")
     @Binds
     val AppSettingsRepositoryImpl.bind: AppSettingsRepository
 
+    @Suppress("unused")
     @Provides
     fun provideDataStore(context: Context): DataStore<AppSettings> = createDataStore(context)
 
