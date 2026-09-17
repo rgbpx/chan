@@ -43,6 +43,7 @@ kotlin {
             implementation(libs.okio)
             implementation(libs.androidx.datastore.core.okio)
             api(libs.androidx.datastore.core)
+            implementation(libs.kermit)
         }
     }
 }
