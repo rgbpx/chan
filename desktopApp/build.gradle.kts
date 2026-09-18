@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.compose.uiToolingPreview)
 
     implementation(libs.kermit)
+    implementation(libs.filekit.core)
 }
 
 compose.desktop {
