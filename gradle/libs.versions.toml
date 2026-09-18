@@ -14,6 +14,7 @@ okio = "3.18.2"
 kotlinx-serialization = "1.11.0"
 metro = "1.4.3"
 kermit = "2.2.0"
+filekit = "0.16.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -32,6 +33,7 @@ androidx-datastore-core-okio = { module = "androidx.datastore:datastore-core-oki
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "filekit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

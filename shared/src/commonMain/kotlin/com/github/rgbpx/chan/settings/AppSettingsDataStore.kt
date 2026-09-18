@@ -3,17 +3,24 @@ package com.github.rgbpx.chan.settings
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.okio.OkioStorage
+import io.github.vinceglb.filekit.FileKit
+import io.github.vinceglb.filekit.filesDir
+import io.github.vinceglb.filekit.path
+import io.github.vinceglb.filekit.resolve
 import okio.FileSystem
-import okio.Path
+import okio.Path.Companion.toPath
 
-internal const val APP_NAME = "chan"
-internal const val DATA_STORE_FILE_NAME = "settings.json"
-
-internal fun createDataStore(producePath: () -> Path): DataStore<AppSettings> =
+internal fun createDataStore(fileName: String = "settings.json"): DataStore<AppSettings> =
     DataStoreFactory.create(
         storage = OkioStorage(
             fileSystem = FileSystem.SYSTEM,
             serializer = AppSettingsSerializer,
-            producePath = producePath,
+            producePath = {
+                FileKit
+                    .filesDir
+                    .resolve(fileName)
+                    .path
+                    .toPath()
+            },
         )
     )
