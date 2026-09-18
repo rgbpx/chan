@@ -4,13 +4,12 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import co.touchlab.kermit.Logger
 import com.github.rgbpx.chan.di.AppGraph
+import com.github.rgbpx.chan.settings.appMetadata
 import dev.zacsweers.metro.createGraph
 import io.github.vinceglb.filekit.FileKit
 
-private const val APP_ID = "chan"
-
 fun main() {
-    FileKit.init(appId = APP_ID)
+    FileKit.init(appId = appMetadata.appName)
 
     application {
         Logger.withTag("App").i { "App started" }
@@ -19,7 +18,7 @@ fun main() {
 
         Window(
             onCloseRequest = ::exitApplication,
-            title = "Chan",
+            title = appMetadata.appTitle,
         ) {
             App(appGraph.appSettingsRepository)
         }
