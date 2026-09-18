@@ -10,7 +10,7 @@ import io.github.vinceglb.filekit.resolve
 import okio.FileSystem
 import okio.Path.Companion.toPath
 
-internal fun createDataStore(fileName: String = "settings.json"): DataStore<AppSettings> =
+internal fun createDataStore(fileName: String = appMetadata.settingsFileName): DataStore<AppSettings> =
     DataStoreFactory.create(
         storage = OkioStorage(
             fileSystem = FileSystem.SYSTEM,
