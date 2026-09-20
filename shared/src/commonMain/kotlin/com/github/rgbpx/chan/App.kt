@@ -36,7 +36,8 @@ fun App(appSettingsRepository: AppSettingsRepository) {
 
     when (val state = uiState) {
         is SettingsUiState.Loading -> LoadingScreen()
-        is SettingsUiState.Error -> ErrorScreen(state.throwable)
+        is SettingsUiState.Error -> ErrorScreen(state.throwable, {}, {})
+
         is SettingsUiState.Loaded -> if (state.settings.firstLaunch) {
             OnboardingScreen(onFinished = {
                 scope.launch { appSettingsRepository.setFirstLaunchCompleted() }
