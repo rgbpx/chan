@@ -77,6 +77,10 @@ symbolCraft {
     }
 }
 
+tasks.named("compileAndroidMain") {
+    dependsOn("generateSymbolCraftIcons")
+}
+
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
 }
