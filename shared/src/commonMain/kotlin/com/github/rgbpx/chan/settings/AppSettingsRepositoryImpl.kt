@@ -10,7 +10,6 @@ import io.github.vinceglb.filekit.path
 import io.github.vinceglb.filekit.resolve
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import kotlin.time.Clock
 
 @SingleIn(AppScope::class)
 @Inject
@@ -23,37 +22,21 @@ class AppSettingsRepositoryImpl(
         dataStore.updateData { it.copy(firstLaunch = false) }
     }
 
-    override suspend fun readCorruptedFileContent(): String {
+    override suspend fun readCorruptedFileContent(corruptedFileName: String): String {
         val corruptedFilePath = FileKit
             .filesDir
-            .resolve(appMetadata.settingsFileName)
+            .resolve(corruptedFileName)
             .path
             .toPath()
 
-        return FileSystem.SYSTEM.read(corruptedFilePath) { readUtf8() }
-    }
-
-    override suspend fun backupCorruptedFile() {
-        val corruptedFilename = appMetadata.settingsFileName
-        val corruptedFilePath = FileKit
-            .filesDir
-            .resolve(corruptedFilename)
-            .path
-            .toPath()
-
-        val unixTimeMs = Clock.System.now().toEpochMilliseconds()
-        val backupFilename =
-            "${corruptedFilename}.corrupted-${unixTimeMs}"
-        val backupPath = FileKit
-            .filesDir
-            .resolve(backupFilename)
-            .path
-            .toPath()
-
-        FileSystem.SYSTEM.atomicMove(corruptedFilePath, backupPath)
+        return FileSystem.SYSTEM.read(corruptedFilePath) {
+            readUtf8()
+        }
     }
 
     override suspend fun resetCorruptedFile() {
-        dataStore.updateData { AppSettings() }
+        dataStore.updateData {
+            it.copy(corruptedBackupFileName = null)
+        }
     }
 }
