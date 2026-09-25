@@ -5,4 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AppSettings(
     val firstLaunch: Boolean = true,
+    val corruptedBackupFileName: String? = null,
 )

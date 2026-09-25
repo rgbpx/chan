@@ -1,3 +1,5 @@
+import io.github.kingsword09.symbolcraft.model.SymbolFill
+import io.github.kingsword09.symbolcraft.model.SymbolVariant
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,6 +9,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.metro)
+    alias(libs.plugins.symbolCraft)
 }
 
 kotlin {
@@ -30,23 +33,52 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
         }
-        commonMain.dependencies {
-            implementation(libs.compose.runtime)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.components.resources)
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.okio)
-            implementation(libs.androidx.datastore.core.okio)
-            api(libs.androidx.datastore.core)
-            implementation(libs.kermit)
-            implementation(libs.filekit.core)
+
+        commonMain {
+            kotlin {
+                srcDir("src/commonMain/generated/symbols")
+            }
+
+            dependencies {
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.ui)
+                implementation(libs.compose.components.resources)
+                implementation(libs.compose.uiToolingPreview)
+                implementation(libs.compose.material3.adaptive)
+                implementation(libs.androidx.lifecycle.viewmodelCompose)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.okio)
+                implementation(libs.androidx.datastore.core.okio)
+                api(libs.androidx.datastore.core)
+                implementation(libs.kermit)
+                implementation(libs.filekit.core)
+            }
         }
     }
+}
+
+symbolCraft {
+    packageName.set("com.github.rgbpx.chan.symbols")
+    outputDirectory.set("src/commonMain/generated/symbols")
+
+    naming {
+        pascalCase()
+    }
+
+    materialSymbols("content_copy", "reset_settings") {
+        style(
+            weight = 400,
+            variant = SymbolVariant.OUTLINED,
+            fill = SymbolFill.UNFILLED,
+        )
+    }
+}
+
+tasks.named("compileAndroidMain") {
+    dependsOn("generateSymbolCraftIcons")
 }
 
 dependencies {

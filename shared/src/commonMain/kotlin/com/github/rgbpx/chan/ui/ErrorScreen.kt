@@ -1,9 +1,10 @@
 package com.github.rgbpx.chan.ui
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,19 +13,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ErrorScreen(throwable: Throwable) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+fun ErrorScreen(
+    throwable: Throwable,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center,
     ) {
-        Text("App settings failed to load.")
-        Text(throwable.message ?: "Unknown error")
+        Column(
+            modifier = Modifier.widthIn(max = 480.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text("App settings failed to load.")
+            Text(throwable.message ?: "Unknown error")
+        }
     }
 }
 
 @Preview
 @Composable
 private fun ErrorScreenPreview() {
-    ErrorScreen(throwable = RuntimeException("Preview error"))
+    ErrorScreen(
+        throwable = RuntimeException("Preview error"),
+    )
 }
