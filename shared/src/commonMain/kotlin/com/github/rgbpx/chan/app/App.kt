@@ -7,9 +7,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.github.rgbpx.chan.app.di.AppGraph
+import com.github.rgbpx.chan.app.di.appShellViewModelFactory
 import com.github.rgbpx.chan.core.ui.ErrorScreen
 import com.github.rgbpx.chan.core.ui.LoadingScreen
 import com.github.rgbpx.chan.platform.clipboard.toClipEntry
@@ -25,13 +24,7 @@ fun App(
         createGraph()
     }
 ) {
-    val viewModel = viewModel<AppShellViewModel>(
-        factory = viewModelFactory {
-            initializer {
-                AppShellViewModel(appGraph.appSettingsRepository)
-            }
-        }
-    )
+    val viewModel = viewModel<AppShellViewModel>(factory = appGraph.appShellViewModelFactory())
 
     val uiState by viewModel.uiState.collectAsState()
 
