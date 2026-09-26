@@ -1,9 +1,10 @@
-package com.github.rgbpx.chan.settings
+package com.github.rgbpx.chan.feature.settings.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.core.okio.OkioStorage
+import com.github.rgbpx.chan.feature.settings.domain.AppSettings
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.filesDir
 import io.github.vinceglb.filekit.path

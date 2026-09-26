@@ -1,10 +1,10 @@
 package com.github.rgbpx.chan.app.di
 
 import androidx.datastore.core.DataStore
-import com.github.rgbpx.chan.settings.AppSettings
-import com.github.rgbpx.chan.settings.AppSettingsRepository
-import com.github.rgbpx.chan.settings.AppSettingsRepositoryImpl
-import com.github.rgbpx.chan.settings.createDataStore
+import com.github.rgbpx.chan.feature.settings.data.AppSettingsRepositoryImpl
+import com.github.rgbpx.chan.feature.settings.data.createDataStore
+import com.github.rgbpx.chan.feature.settings.domain.AppSettings
+import com.github.rgbpx.chan.feature.settings.domain.AppSettingsRepository
 import dev.zacsweers.metro.Binds
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides

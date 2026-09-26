@@ -1,7 +1,9 @@
-package com.github.rgbpx.chan.settings
+package com.github.rgbpx.chan.feature.settings.data
 
 import androidx.datastore.core.DataStore
 import com.github.rgbpx.chan.app.di.AppScope
+import com.github.rgbpx.chan.feature.settings.domain.AppSettings
+import com.github.rgbpx.chan.feature.settings.domain.AppSettingsRepository
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.github.vinceglb.filekit.FileKit

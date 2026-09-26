@@ -1,7 +1,8 @@
-package com.github.rgbpx.chan.settings
+package com.github.rgbpx.chan.feature.settings.data
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.okio.OkioSerializer
+import com.github.rgbpx.chan.feature.settings.domain.AppSettings
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import okio.BufferedSink

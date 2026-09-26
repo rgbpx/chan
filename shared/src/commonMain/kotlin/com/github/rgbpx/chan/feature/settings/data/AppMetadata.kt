@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan.settings
+package com.github.rgbpx.chan.feature.settings.data
 
 interface AppMetadata {
     val appId: String get() = "com.github.rgbpx.chan"
