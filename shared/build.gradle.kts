@@ -55,6 +55,8 @@ kotlin {
                 api(libs.androidx.datastore.core)
                 implementation(libs.kermit)
                 implementation(libs.filekit.core)
+                implementation(libs.metrox.viewmodel)
+                implementation(libs.metrox.viewmodel.compose)
             }
         }
     }
