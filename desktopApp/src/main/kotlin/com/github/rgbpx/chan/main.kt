@@ -7,7 +7,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import co.touchlab.kermit.Logger
 import com.github.rgbpx.chan.app.App
-import com.github.rgbpx.chan.settings.appMetadata
+import com.github.rgbpx.chan.feature.settings.data.appMetadata
 import io.github.vinceglb.filekit.FileKit
 import java.awt.Dimension
 

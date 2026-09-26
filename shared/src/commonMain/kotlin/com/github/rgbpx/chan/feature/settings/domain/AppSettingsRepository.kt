@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan.settings
+package com.github.rgbpx.chan.feature.settings.domain
 
 import kotlinx.coroutines.flow.Flow
 

@@ -1,6 +1,6 @@
 package com.github.rgbpx.chan.ui
 
-import com.github.rgbpx.chan.settings.AppSettings
+import com.github.rgbpx.chan.feature.settings.domain.AppSettings
 
 sealed interface SettingsUiState {
     data object Loading : SettingsUiState

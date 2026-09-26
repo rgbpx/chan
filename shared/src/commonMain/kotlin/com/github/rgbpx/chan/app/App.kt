@@ -10,8 +10,8 @@ import co.touchlab.kermit.Logger
 import com.github.rgbpx.chan.app.di.AppGraph
 import com.github.rgbpx.chan.core.ui.ErrorScreen
 import com.github.rgbpx.chan.core.ui.LoadingScreen
+import com.github.rgbpx.chan.feature.settings.domain.AppSettings
 import com.github.rgbpx.chan.platform.clipboard.toClipEntry
-import com.github.rgbpx.chan.settings.AppSettings
 import com.github.rgbpx.chan.ui.MainScreen
 import com.github.rgbpx.chan.ui.OnboardingScreen
 import com.github.rgbpx.chan.ui.RecoverScreen
