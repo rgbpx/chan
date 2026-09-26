@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan.di
+package com.github.rgbpx.chan.app.di
 
 import androidx.datastore.core.DataStore
 import com.github.rgbpx.chan.settings.AppSettings

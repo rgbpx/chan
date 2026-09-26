@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan
+package com.github.rgbpx.chan.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -7,15 +7,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalClipboard
 import co.touchlab.kermit.Logger
+import com.github.rgbpx.chan.app.di.AppGraph
+import com.github.rgbpx.chan.core.ui.ErrorScreen
+import com.github.rgbpx.chan.core.ui.LoadingScreen
 import com.github.rgbpx.chan.platform.clipboard.toClipEntry
 import com.github.rgbpx.chan.settings.AppSettings
-import com.github.rgbpx.chan.settings.AppSettingsRepository
-import com.github.rgbpx.chan.ui.ErrorScreen
-import com.github.rgbpx.chan.ui.LoadingScreen
 import com.github.rgbpx.chan.ui.MainScreen
 import com.github.rgbpx.chan.ui.OnboardingScreen
 import com.github.rgbpx.chan.ui.RecoverScreen
 import com.github.rgbpx.chan.ui.SettingsUiState
+import dev.zacsweers.metro.createGraph
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -23,9 +24,9 @@ import kotlinx.coroutines.launch
 private val log = Logger.withTag("App")
 
 @Composable
-fun App(appSettingsRepository: AppSettingsRepository) {
-    val uiState by remember(appSettingsRepository) {
-        appSettingsRepository.settings
+fun App(appGraph: AppGraph = remember { createGraph() }) {
+    val uiState by remember(appGraph.appSettingsRepository) {
+        appGraph.appSettingsRepository.settings
             .map<AppSettings, SettingsUiState> {
                 when (val corruptedFileName = it.corruptedBackupFileName) {
                     null -> SettingsUiState.Loaded(it)
@@ -51,7 +52,7 @@ fun App(appSettingsRepository: AppSettingsRepository) {
         is SettingsUiState.Recovered -> RecoverScreen(
             onCopyClick = {
                 scope.launch {
-                    val content = appSettingsRepository.readCorruptedFileContent(
+                    val content = appGraph.appSettingsRepository.readCorruptedFileContent(
                         state.corruptedBackupFileName,
                     )
 
@@ -60,7 +61,7 @@ fun App(appSettingsRepository: AppSettingsRepository) {
             },
             onResetClick = {
                 scope.launch {
-                    appSettingsRepository.resetCorruptedFile()
+                    appGraph.appSettingsRepository.resetCorruptedFile()
                 }
             },
         )
@@ -70,7 +71,7 @@ fun App(appSettingsRepository: AppSettingsRepository) {
                 OnboardingScreen(
                     onFinished = {
                         scope.launch {
-                            appSettingsRepository.setFirstLaunchCompleted()
+                            appGraph.appSettingsRepository.setFirstLaunchCompleted()
                         }
                     },
                 )
