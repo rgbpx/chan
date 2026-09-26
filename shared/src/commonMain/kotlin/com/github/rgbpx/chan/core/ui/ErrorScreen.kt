@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan.ui
+package com.github.rgbpx.chan.core.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

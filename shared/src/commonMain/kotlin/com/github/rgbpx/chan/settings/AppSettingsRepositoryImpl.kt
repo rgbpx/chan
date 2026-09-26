@@ -1,7 +1,7 @@
 package com.github.rgbpx.chan.settings
 
 import androidx.datastore.core.DataStore
-import com.github.rgbpx.chan.di.AppScope
+import com.github.rgbpx.chan.app.di.AppScope
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.github.vinceglb.filekit.FileKit

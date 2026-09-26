@@ -5,8 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import co.touchlab.kermit.Logger
-import com.github.rgbpx.chan.di.AppGraph
-import dev.zacsweers.metro.createGraph
+import com.github.rgbpx.chan.app.App
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,10 +14,8 @@ class MainActivity : ComponentActivity() {
 
         Logger.withTag("App").i { "App started" }
 
-        val appGraph = createGraph<AppGraph>()
-
         setContent {
-            App(appGraph.appSettingsRepository)
+            App()
         }
     }
 }
