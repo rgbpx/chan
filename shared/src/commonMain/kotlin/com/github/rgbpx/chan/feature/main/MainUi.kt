@@ -17,7 +17,7 @@ fun MainUi(
     state: MainScreen.State,
     modifier: Modifier,
 ) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text("Main screen")
     }
 }

@@ -53,8 +53,7 @@ fun RecoveryUi(
     }
 
     Box(
-        // TODO: pass modifier
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(24.dp),
         contentAlignment = Alignment.Center,
