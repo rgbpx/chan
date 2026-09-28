@@ -17,11 +17,14 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import com.github.rgbpx.chan.app.di.AppScope
+import com.github.rgbpx.chan.platform.clipboard.toClipEntry
 import com.github.rgbpx.chan.symbols.icons.materialsymbols.Icons
 import com.github.rgbpx.chan.symbols.icons.materialsymbols.icons.ContentCopyW400Outlined
 import com.github.rgbpx.chan.symbols.icons.materialsymbols.icons.ResetSettingsW400Outlined
@@ -35,10 +38,19 @@ fun RecoveryUi(
     state: RecoveryScreen.State,
     modifier: Modifier,
 ) {
+    val clipboard = LocalClipboard.current
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
     val isMediumWidth = windowSizeClass.isWidthAtLeastBreakpoint(
         WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND,
     )
+
+    LaunchedEffect(state.copyContent) {
+        state.copyContent?.let {
+            clipboard.setClipEntry(
+                it.toClipEntry()
+            )
+        }
+    }
 
     Box(
         // TODO: pass modifier
