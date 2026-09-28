@@ -1,3 +1,4 @@
+import dev.zacsweers.metro.gradle.ExperimentalMetroGradleApi
 import io.github.kingsword09.symbolcraft.model.SymbolFill
 import io.github.kingsword09.symbolcraft.model.SymbolVariant
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -47,7 +48,6 @@ kotlin {
                 implementation(libs.compose.components.resources)
                 implementation(libs.compose.uiToolingPreview)
                 implementation(libs.compose.material3.adaptive)
-                implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.okio)
@@ -55,11 +55,16 @@ kotlin {
                 api(libs.androidx.datastore.core)
                 implementation(libs.kermit)
                 implementation(libs.filekit.core)
-                implementation(libs.metrox.viewmodel)
-                implementation(libs.metrox.viewmodel.compose)
+                implementation(libs.circuit.foundation)
+                implementation(libs.circuit.serialization)
             }
         }
     }
+}
+
+@OptIn(ExperimentalMetroGradleApi::class)
+metro {
+    enableCircuitCodegen.set(true)
 }
 
 symbolCraft {
