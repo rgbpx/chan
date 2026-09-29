@@ -32,7 +32,9 @@ fun main() {
                 }
             }
 
-            App()
+            App(
+                onExitRequest = ::exitApplication,
+            )
         }
     }
 }

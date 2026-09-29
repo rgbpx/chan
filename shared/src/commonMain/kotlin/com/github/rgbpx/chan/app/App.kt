@@ -14,7 +14,8 @@ import dev.zacsweers.metro.createGraph
 fun App(
     appGraph: AppGraph = remember {
         createGraph()
-    }
+    },
+    onExitRequest: () -> Unit,
 ) {
     CircuitCompositionLocals(
         appGraph.circuit,
@@ -24,7 +25,7 @@ fun App(
         val navigator = rememberCircuitNavigator(
             backStack,
             onRootPop = {
-                // Do something when the root screen is popped, usually exiting the app
+                onExitRequest()
             }
         )
 

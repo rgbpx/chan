@@ -15,7 +15,9 @@ class MainActivity : ComponentActivity() {
         Logger.withTag("App").i { "App started" }
 
         setContent {
-            App()
+            App(
+                onExitRequest = ::finish,
+            )
         }
     }
 }
