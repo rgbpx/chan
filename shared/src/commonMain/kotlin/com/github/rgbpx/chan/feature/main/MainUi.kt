@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.github.rgbpx.chan.app.di.AppScope
 import com.slack.circuit.codegen.annotations.CircuitInject
 
@@ -20,4 +21,10 @@ fun MainUi(
     ) {
         Text("Main screen")
     }
+}
+
+@Preview
+@Composable
+private fun MainUiPreview() {
+    MainUi()
 }

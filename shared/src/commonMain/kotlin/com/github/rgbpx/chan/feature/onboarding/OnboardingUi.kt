@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.rgbpx.chan.app.di.AppScope
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -31,4 +32,14 @@ fun OnboardingUi(
             Text("Get started")
         }
     }
+}
+
+@Preview
+@Composable
+private fun OnboardingUiPreview() {
+    OnboardingUi(
+        state = OnboardingScreen.State(
+            eventSink = {},
+        ),
+    )
 }

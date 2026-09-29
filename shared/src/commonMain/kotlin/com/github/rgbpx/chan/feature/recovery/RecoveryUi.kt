@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import com.github.rgbpx.chan.app.di.AppScope
@@ -126,4 +127,14 @@ private fun ResetButton(
         Spacer(Modifier.width(ButtonDefaults.IconSpacing))
         Text(text)
     }
+}
+
+@Preview
+@Composable
+private fun RecoveryUiPreview() {
+    RecoveryUi(
+        state = RecoveryScreen.State(
+            eventSink = {},
+        ),
+    )
 }

@@ -2,6 +2,7 @@ package com.github.rgbpx.chan.feature.bootstrap
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.core.ui.ErrorScreen
 import com.github.rgbpx.chan.core.ui.LoadingScreen
@@ -19,4 +20,14 @@ fun BootstrapUi(
         BootstrapScreen.State.Loading -> LoadingScreen()
         is BootstrapScreen.State.Error -> ErrorScreen(throwable = state.throwable)
     }
+}
+
+@Preview
+@Composable
+private fun BootstrapErrorUiPreview() {
+    BootstrapUi(
+        state = BootstrapScreen.State.Error(
+            throwable = Exception("Preview error"),
+        ),
+    )
 }
