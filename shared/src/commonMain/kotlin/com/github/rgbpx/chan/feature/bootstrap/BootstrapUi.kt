@@ -13,7 +13,7 @@ import dev.zacsweers.metro.Inject
 @Composable
 fun BootstrapUi(
     state: BootstrapScreen.State,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     when (state) {
         BootstrapScreen.State.Loading -> LoadingScreen()

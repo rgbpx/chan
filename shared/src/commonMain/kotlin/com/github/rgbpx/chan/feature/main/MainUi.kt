@@ -12,7 +12,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 @CircuitInject(MainScreen::class, AppScope::class)
 @Composable
 fun MainUi(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
@@ -21,4 +21,3 @@ fun MainUi(
         Text("Main screen")
     }
 }
-

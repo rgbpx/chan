@@ -19,7 +19,7 @@ import dev.zacsweers.metro.Inject
 @Composable
 fun OnboardingUi(
     state: OnboardingScreen.State,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxSize().padding(24.dp),

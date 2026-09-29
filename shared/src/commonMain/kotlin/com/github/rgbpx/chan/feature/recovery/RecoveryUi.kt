@@ -36,7 +36,7 @@ import dev.zacsweers.metro.Inject
 @Composable
 fun RecoveryUi(
     state: RecoveryScreen.State,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
 ) {
     val clipboard = LocalClipboard.current
     val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
