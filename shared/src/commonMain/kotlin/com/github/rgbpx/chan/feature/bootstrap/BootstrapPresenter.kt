@@ -39,16 +39,16 @@ class BootstrapPresenter(
             try {
                 val settings = appSettingsRepository.settings.first()
 
-                when (val corrupted = settings.corruptedBackupFileName) {
-                    null -> navigator.resetRoot(
-                        when {
+                navigator.resetRoot(
+                    when (val backupFilename = settings.corruptedBackupFileName) {
+                        null -> when {
                             settings.firstLaunch -> OnboardingScreen
                             else -> MainScreen
                         }
-                    )
 
-                    else -> navigator.resetRoot(RecoveryScreen(corrupted))
-                }
+                        else -> RecoveryScreen(backupFilename)
+                    }
+                )
             } catch (throwable: Throwable) {
                 error = throwable
             }
@@ -58,6 +58,5 @@ class BootstrapPresenter(
             null -> BootstrapScreen.State.Loading
             else -> BootstrapScreen.State.Error(bootstrapError)
         }
-
     }
 }
