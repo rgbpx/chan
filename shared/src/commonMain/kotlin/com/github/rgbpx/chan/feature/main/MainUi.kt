@@ -8,16 +8,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.github.rgbpx.chan.app.di.AppScope
 import com.slack.circuit.codegen.annotations.CircuitInject
-import dev.zacsweers.metro.Inject
 
 @CircuitInject(MainScreen::class, AppScope::class)
-@Inject
 @Composable
 fun MainUi(
-    state: MainScreen.State,
     modifier: Modifier,
 ) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         Text("Main screen")
     }
 }
