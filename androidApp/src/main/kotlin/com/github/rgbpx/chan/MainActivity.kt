@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import co.touchlab.kermit.Logger
-import com.github.rgbpx.chan.app.App
+import com.github.rgbpx.chan.app.ui.App
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,7 +15,9 @@ class MainActivity : ComponentActivity() {
         Logger.withTag("App").i { "App started" }
 
         setContent {
-            App()
+            App(
+                onExitRequest = ::finish,
+            )
         }
     }
 }

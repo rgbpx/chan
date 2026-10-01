@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan.ui
+package com.github.rgbpx.chan.feature.onboarding.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,16 +11,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.rgbpx.chan.app.di.AppScope
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.zacsweers.metro.Inject
 
+@CircuitInject(OnboardingScreen::class, AppScope::class)
+@Inject
 @Composable
-fun OnboardingScreen(onFinished: () -> Unit) {
+fun OnboardingUi(
+    state: OnboardingScreen.State,
+    modifier: Modifier = Modifier,
+) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp),
+        modifier = modifier.fillMaxSize().padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text("Welcome!")
-        Button(onClick = onFinished) {
+
+        Button(onClick = {
+            state.eventSink(
+                OnboardingScreen.Event.Finished
+            )
+        }) {
             Text("Get started")
         }
     }
@@ -28,6 +41,10 @@ fun OnboardingScreen(onFinished: () -> Unit) {
 
 @Preview
 @Composable
-private fun OnboardingScreenPreview() {
-    OnboardingScreen(onFinished = {})
+private fun OnboardingUiPreview() {
+    OnboardingUi(
+        state = OnboardingScreen.State(
+            eventSink = {},
+        ),
+    )
 }
