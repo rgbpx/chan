@@ -1,9 +1,9 @@
-package com.github.rgbpx.chan.app
+package com.github.rgbpx.chan.app.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.github.rgbpx.chan.app.di.AppGraph
-import com.github.rgbpx.chan.feature.bootstrap.BootstrapScreen
+import com.github.rgbpx.chan.feature.bootstrap.ui.BootstrapScreen
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.foundation.NavigableCircuitContent

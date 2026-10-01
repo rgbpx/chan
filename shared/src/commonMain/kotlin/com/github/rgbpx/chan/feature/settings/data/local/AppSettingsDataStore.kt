@@ -1,10 +1,11 @@
-package com.github.rgbpx.chan.feature.settings.data
+package com.github.rgbpx.chan.feature.settings.data.local
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.core.okio.OkioStorage
-import com.github.rgbpx.chan.feature.settings.domain.AppSettings
+import com.github.rgbpx.chan.app.data.appMetadata
+import com.github.rgbpx.chan.feature.settings.domain.model.AppSettings
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.filesDir
 import io.github.vinceglb.filekit.path
@@ -28,7 +29,7 @@ internal fun createDataStore(fileName: String = appMetadata.settingsFileName): D
         ),
         corruptionHandler = ReplaceFileCorruptionHandler {
             val unixTimeMs = Clock.System.now().toEpochMilliseconds()
-            val backupFilename = "$fileName.corrupted-$unixTimeMs"
+            val backupFilename = "$fileName.backup-$unixTimeMs"
 
             val corruptedFilePath = FileKit
                 .filesDir
@@ -48,7 +49,7 @@ internal fun createDataStore(fileName: String = appMetadata.settingsFileName): D
             )
 
             AppSettings(
-                corruptedBackupFileName = backupFilename,
+                backupFilename = backupFilename,
             )
         },
     )

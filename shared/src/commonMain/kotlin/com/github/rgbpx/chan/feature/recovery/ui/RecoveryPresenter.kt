@@ -1,15 +1,13 @@
-package com.github.rgbpx.chan.feature.recovery
+package com.github.rgbpx.chan.feature.recovery.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
-import com.github.rgbpx.chan.feature.bootstrap.BootstrapScreen
-import com.github.rgbpx.chan.feature.settings.domain.AppSettingsRepository
+import com.github.rgbpx.chan.feature.bootstrap.ui.BootstrapScreen
+import com.github.rgbpx.chan.feature.settings.domain.repository.AppSettingsRepository
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceAndCollectAsRetainedState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.Assisted
@@ -36,20 +34,33 @@ class RecoveryPresenter(
     @Composable
     override fun present(): RecoveryScreen.State {
         val scope = rememberCoroutineScope()
-        var copyContent by remember { mutableStateOf<String?>(null) }
+        val result by produceAndCollectAsRetainedState(
+            screen.backupFilename,
+            initial = null,
+        ) {
+            appSettingsRepository.readCorruptedFileContent(
+                screen.backupFilename
+            )
+        }
 
-        return RecoveryScreen.State(copyContent = copyContent) { event ->
+        val eventSink: (RecoveryScreen.Event) -> Unit = { event ->
             when (event) {
-                RecoveryScreen.Event.CopyClicked -> scope.launch {
-                    copyContent =
-                        appSettingsRepository.readCorruptedFileContent(screen.corruptedBackupFileName)
-                }
-
-                RecoveryScreen.Event.ResetClicked -> scope.launch {
+                RecoveryScreen.Event.Reset -> scope.launch {
                     appSettingsRepository.resetCorruptedFile()
                     navigator.resetRoot(BootstrapScreen)
                 }
             }
+        }
+
+        return when (val content = result) {
+            null -> RecoveryScreen.State.Loading(
+                eventSink = eventSink,
+            )
+
+            else -> RecoveryScreen.State.Loaded(
+                backupContent = content,
+                eventSink = eventSink,
+            )
         }
     }
 }

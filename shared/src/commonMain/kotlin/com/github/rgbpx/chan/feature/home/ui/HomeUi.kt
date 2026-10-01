@@ -1,4 +1,5 @@
-package com.github.rgbpx.chan.feature.main
+package com.github.rgbpx.chan.feature.home.ui
+
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,9 +11,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.github.rgbpx.chan.app.di.AppScope
 import com.slack.circuit.codegen.annotations.CircuitInject
 
-@CircuitInject(MainScreen::class, AppScope::class)
+@CircuitInject(HomeScreen::class, AppScope::class)
 @Composable
-fun MainUi(
+fun HomeUi(
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -25,6 +26,6 @@ fun MainUi(
 
 @Preview
 @Composable
-private fun MainUiPreview() {
-    MainUi()
+private fun HomeUiPreview() {
+    HomeUi()
 }

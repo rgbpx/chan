@@ -1,10 +1,10 @@
 package com.github.rgbpx.chan.app.di
 
 import androidx.datastore.core.DataStore
-import com.github.rgbpx.chan.feature.settings.data.AppSettingsRepositoryImpl
-import com.github.rgbpx.chan.feature.settings.data.createDataStore
-import com.github.rgbpx.chan.feature.settings.domain.AppSettings
-import com.github.rgbpx.chan.feature.settings.domain.AppSettingsRepository
+import com.github.rgbpx.chan.feature.settings.data.local.createDataStore
+import com.github.rgbpx.chan.feature.settings.data.repository.AppSettingsRepositoryImpl
+import com.github.rgbpx.chan.feature.settings.domain.model.AppSettings
+import com.github.rgbpx.chan.feature.settings.domain.repository.AppSettingsRepository
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.CircuitSaver

@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan.feature.settings.data
+package com.github.rgbpx.chan.app.data
 
 object AndroidAppMetadata : AppMetadata {
 }

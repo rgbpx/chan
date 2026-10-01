@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan.feature.onboarding
+package com.github.rgbpx.chan.feature.onboarding.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +28,12 @@ fun OnboardingUi(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text("Welcome!")
-        Button(onClick = { state.eventSink(OnboardingScreen.Event.Finished) }) {
+
+        Button(onClick = {
+            state.eventSink(
+                OnboardingScreen.Event.Finished
+            )
+        }) {
             Text("Get started")
         }
     }

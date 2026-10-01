@@ -9,8 +9,8 @@ import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import co.touchlab.kermit.Logger
-import com.github.rgbpx.chan.app.App
-import com.github.rgbpx.chan.feature.settings.data.appMetadata
+import com.github.rgbpx.chan.app.data.appMetadata
+import com.github.rgbpx.chan.app.ui.App
 import io.github.vinceglb.filekit.FileKit
 import java.awt.Dimension
 

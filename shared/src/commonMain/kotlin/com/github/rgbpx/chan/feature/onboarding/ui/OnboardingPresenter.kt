@@ -1,10 +1,10 @@
-package com.github.rgbpx.chan.feature.onboarding
+package com.github.rgbpx.chan.feature.onboarding.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import com.github.rgbpx.chan.app.di.AppScope
-import com.github.rgbpx.chan.feature.bootstrap.BootstrapScreen
-import com.github.rgbpx.chan.feature.settings.domain.AppSettingsRepository
+import com.github.rgbpx.chan.feature.bootstrap.ui.BootstrapScreen
+import com.github.rgbpx.chan.feature.settings.domain.repository.AppSettingsRepository
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -28,13 +28,15 @@ class OnboardingPresenter(
     @Composable
     override fun present(): OnboardingScreen.State {
         val scope = rememberCoroutineScope()
-        
+
         return OnboardingScreen.State { event ->
             when (event) {
-                OnboardingScreen.Event.Finished -> scope.launch {
-                    appSettingsRepository.setFirstLaunchCompleted()
+                OnboardingScreen.Event.Finished -> {
+                    scope.launch {
+                        appSettingsRepository.setFirstLaunchCompleted()
 
-                    navigator.resetRoot(BootstrapScreen) // gatekeeper re-decides
+                        navigator.resetRoot(BootstrapScreen)
+                    }
                 }
             }
         }
