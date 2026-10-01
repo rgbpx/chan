@@ -30,9 +30,18 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.compose.uiTooling)
+        androidMain {
+            dependencies {
+                implementation(libs.compose.uiToolingPreview)
+                implementation(libs.compose.uiTooling)
+                implementation(libs.ktor.client.okhttp)
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
+            }
         }
 
         commonMain {
@@ -57,6 +66,9 @@ kotlin {
                 implementation(libs.filekit.core)
                 implementation(libs.circuit.foundation)
                 implementation(libs.circuit.serialization)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
             }
         }
     }
