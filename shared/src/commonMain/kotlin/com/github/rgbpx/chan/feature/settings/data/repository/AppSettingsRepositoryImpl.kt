@@ -49,28 +49,4 @@ class AppSettingsRepositoryImpl(
             currentSettings.copy(backupFilename = null)
         }
     }
-
-//    override val settings = dataStore.data
-//
-//    override suspend fun setFirstLaunchCompleted() {
-//        dataStore.updateData { it.copy(firstLaunch = false) }
-//    }
-//
-//    override suspend fun readCorruptedFileContent(corruptedFileName: String): String {
-//        val corruptedFilePath = FileKit
-//            .filesDir
-//            .resolve(corruptedFileName)
-//            .path
-//            .toPath()
-//
-//        return FileSystem.SYSTEM.read(corruptedFilePath) {
-//            readUtf8()
-//        }
-//    }
-//
-//    override suspend fun resetCorruptedFile() {
-//        dataStore.updateData {
-//            it.copy(corruptedBackupFileName = null)
-//        }
-//    }
 }
