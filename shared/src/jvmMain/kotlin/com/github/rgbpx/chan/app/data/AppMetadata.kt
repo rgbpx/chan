@@ -1,6 +1,6 @@
 package com.github.rgbpx.chan.app.data
 
-object AndroidAppMetadata : AppMetadata {
+object DekstopAppMetadata : AppMetadata {
 }
 
-actual val appMetadata: AppMetadata = AndroidAppMetadata
+actual val appMetadata: AppMetadata = DekstopAppMetadata
