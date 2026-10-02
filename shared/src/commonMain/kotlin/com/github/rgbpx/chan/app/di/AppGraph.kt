@@ -1,6 +1,7 @@
 package com.github.rgbpx.chan.app.di
 
 import androidx.datastore.core.DataStore
+import com.github.rgbpx.chan.core.network.di.NetworkBindings
 import com.github.rgbpx.chan.feature.settings.data.local.createDataStore
 import com.github.rgbpx.chan.feature.settings.data.repository.AppSettingsRepositoryImpl
 import com.github.rgbpx.chan.feature.settings.domain.model.AppSettings
@@ -25,7 +26,10 @@ interface CircuitSerializationBindings {
 
 @DependencyGraph(
     AppScope::class,
-    bindingContainers = [CircuitSerializationBindings::class],
+    bindingContainers = [
+        CircuitSerializationBindings::class,
+        NetworkBindings::class,
+    ],
 )
 interface AppGraph {
     val circuit: Circuit
