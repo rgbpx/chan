@@ -12,13 +12,17 @@ internal class MakabaImageboardEngine(
     private val endpoints: MakabaEndpoints,
 ) : CommonImageboardEngine(httpClient) {
 
-    override val id: EngineId = EngineId("makaba")
+    override val id: EngineId = ID
 
     override suspend fun loadBoards(): List<Board> {
         val dtos: List<MakabaBoardDto> = httpClient
             .get(endpoints.boards())
             .body()
-        
+
         return dtos.map { dto -> dto.toBoard() }
+    }
+
+    companion object {
+        val ID = EngineId("makaba")
     }
 }
