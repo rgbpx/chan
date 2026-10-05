@@ -1,8 +1,10 @@
-package com.github.rgbpx.chan.imageboard.site
+package com.github.rgbpx.chan.imageboard.site.domain.model
 
 import com.github.rgbpx.chan.imageboard.engine.EngineId
+import kotlinx.serialization.Serializable
 
-data class SiteConfig(
+@Serializable
+data class SiteSettings(
     val id: SiteId,
     val name: String,
     val baseUrl: String,
