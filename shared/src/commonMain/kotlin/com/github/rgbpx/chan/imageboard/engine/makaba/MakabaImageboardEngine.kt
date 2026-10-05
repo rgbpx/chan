@@ -4,14 +4,21 @@ import com.github.rgbpx.chan.imageboard.engine.CommonImageboardEngine
 import com.github.rgbpx.chan.imageboard.engine.EngineId
 import com.github.rgbpx.chan.imageboard.model.Board
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
 
-class MakabaImageboardEngine(
+internal class MakabaImageboardEngine(
     httpClient: HttpClient,
+    private val endpoints: MakabaEndpoints,
 ) : CommonImageboardEngine(httpClient) {
 
     override val id: EngineId = EngineId("makaba")
 
     override suspend fun loadBoards(): List<Board> {
-        TODO()
+        val dtos: List<MakabaBoardDto> = httpClient
+            .get(endpoints.boards())
+            .body()
+        
+        return dtos.map { dto -> dto.toBoard() }
     }
 }
