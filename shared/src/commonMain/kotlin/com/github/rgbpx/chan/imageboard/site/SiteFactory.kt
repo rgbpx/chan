@@ -3,6 +3,7 @@ package com.github.rgbpx.chan.imageboard.site
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.makaba.MakabaEndpoints
 import com.github.rgbpx.chan.imageboard.engine.makaba.MakabaImageboardEngine
+import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import io.ktor.client.HttpClient

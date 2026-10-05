@@ -1,6 +1,6 @@
 package com.github.rgbpx.chan.imageboard.site.data.local
 
-import com.github.rgbpx.chan.imageboard.site.SiteSettings
+import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import kotlinx.serialization.Serializable
 
 @Serializable

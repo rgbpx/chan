@@ -1,4 +1,4 @@
-package com.github.rgbpx.chan.imageboard.site
+package com.github.rgbpx.chan.imageboard.site.domain.model
 
 import com.github.rgbpx.chan.imageboard.engine.EngineId
 import kotlinx.serialization.Serializable
