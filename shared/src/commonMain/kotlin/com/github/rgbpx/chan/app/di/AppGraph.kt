@@ -7,6 +7,8 @@ import com.github.rgbpx.chan.feature.settings.data.repository.AppSettingsReposit
 import com.github.rgbpx.chan.feature.settings.domain.model.AppSettings
 import com.github.rgbpx.chan.feature.settings.domain.repository.AppSettingsRepository
 import com.github.rgbpx.chan.imageboard.site.SiteFactory
+import com.github.rgbpx.chan.imageboard.site.di.SiteBindings
+import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.CircuitSaver
@@ -30,6 +32,7 @@ interface CircuitSerializationBindings {
     bindingContainers = [
         CircuitSerializationBindings::class,
         NetworkBindings::class,
+        SiteBindings::class,
     ],
 )
 interface AppGraph {
@@ -37,6 +40,7 @@ interface AppGraph {
     val circuitSaver: CircuitSaver
     val appSettingsRepository: AppSettingsRepository
     val siteFactory: SiteFactory
+    val siteRepository: SiteRepository
 
     @Provides
     fun provideCircuit(
