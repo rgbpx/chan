@@ -9,8 +9,8 @@ import io.ktor.client.request.get
 
 internal class MakabaImageboardEngine(
     httpClient: HttpClient,
-    private val endpoints: MakabaEndpoints,
-) : CommonImageboardEngine(httpClient) {
+    endpoints: MakabaEndpoints,
+) : CommonImageboardEngine(httpClient, endpoints) {
 
     override val id: EngineId = ID
 
