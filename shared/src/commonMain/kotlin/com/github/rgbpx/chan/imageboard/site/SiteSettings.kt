@@ -4,7 +4,7 @@ import com.github.rgbpx.chan.imageboard.engine.EngineId
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SiteConfig(
+data class SiteSettings(
     val id: SiteId,
     val name: String,
     val baseUrl: String,

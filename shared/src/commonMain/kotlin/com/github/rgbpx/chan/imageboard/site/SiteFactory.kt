@@ -12,16 +12,16 @@ import io.ktor.client.HttpClient
 class SiteFactory(
     private val httpClient: HttpClient,
 ) {
-    fun create(config: SiteConfig): Site {
-        val engine = when (config.engineId) {
+    fun create(settings: SiteSettings): Site {
+        val engine = when (settings.engineId) {
             MakabaImageboardEngine.ID -> MakabaImageboardEngine(
                 httpClient = httpClient,
-                endpoints = MakabaEndpoints(config.baseUrl),
+                endpoints = MakabaEndpoints(settings.baseUrl),
             )
 
-            else -> error("Unknown engine: ${config.engineId}")
+            else -> error("Unknown engine: ${settings.engineId}")
         }
-        
-        return Site(config, engine)
+
+        return Site(settings, engine)
     }
 }
