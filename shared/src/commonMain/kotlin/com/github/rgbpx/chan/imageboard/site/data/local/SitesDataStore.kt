@@ -16,7 +16,11 @@ import kotlin.time.Clock
 internal fun createSitesDataStore(
     fileName: String = appMetadata.sitesFileName,
 ): DataStore<StoredSites> {
-    fun pathOf(name: String) = FileKit.filesDir.resolve(name).path.toPath()
+    fun pathOf(name: String) = FileKit
+        .filesDir
+        .resolve(name)
+        .path
+        .toPath()
 
     return DataStoreFactory.create(
         storage = OkioStorage(
@@ -26,10 +30,15 @@ internal fun createSitesDataStore(
         ),
         corruptionHandler = ReplaceFileCorruptionHandler {
             val unixTimeMs = Clock.System.now().toEpochMilliseconds()
+            val backupFilename = "$fileName.backup-$unixTimeMs"
+            val corruptedFilePath = pathOf(fileName)
+            val backupPath = pathOf(backupFilename)
+
             FileSystem.SYSTEM.copy(
-                source = pathOf(fileName),
-                target = pathOf("$fileName.backup-$unixTimeMs"),
+                source = corruptedFilePath,
+                target = backupPath,
             )
+
             StoredSites()
         },
     )

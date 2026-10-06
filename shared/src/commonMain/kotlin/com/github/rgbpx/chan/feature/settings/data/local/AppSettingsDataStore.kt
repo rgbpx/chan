@@ -14,34 +14,26 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 import kotlin.time.Clock
 
-internal fun createDataStore(fileName: String = appMetadata.settingsFileName): DataStore<AppSettings> =
-    DataStoreFactory.create(
+internal fun createDataStore(
+    fileName: String = appMetadata.settingsFileName
+): DataStore<AppSettings> {
+    fun pathOf(name: String) = FileKit
+        .filesDir
+        .resolve(name)
+        .path
+        .toPath()
+
+    return DataStoreFactory.create(
         storage = OkioStorage(
             fileSystem = FileSystem.SYSTEM,
             serializer = AppSettingsSerializer,
-            producePath = {
-                FileKit
-                    .filesDir
-                    .resolve(fileName)
-                    .path
-                    .toPath()
-            },
+            producePath = { pathOf(fileName) },
         ),
         corruptionHandler = ReplaceFileCorruptionHandler {
             val unixTimeMs = Clock.System.now().toEpochMilliseconds()
             val backupFilename = "$fileName.backup-$unixTimeMs"
-
-            val corruptedFilePath = FileKit
-                .filesDir
-                .resolve(fileName)
-                .path
-                .toPath()
-
-            val backupPath = FileKit
-                .filesDir
-                .resolve(backupFilename)
-                .path
-                .toPath()
+            val corruptedFilePath = pathOf(fileName)
+            val backupPath = pathOf(backupFilename)
 
             FileSystem.SYSTEM.copy(
                 source = corruptedFilePath,
@@ -53,3 +45,4 @@ internal fun createDataStore(fileName: String = appMetadata.settingsFileName): D
             )
         },
     )
+}
