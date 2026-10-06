@@ -6,7 +6,7 @@ import com.github.rgbpx.chan.feature.settings.data.local.createDataStore
 import com.github.rgbpx.chan.feature.settings.data.repository.AppSettingsRepositoryImpl
 import com.github.rgbpx.chan.feature.settings.domain.model.AppSettings
 import com.github.rgbpx.chan.feature.settings.domain.repository.AppSettingsRepository
-import com.github.rgbpx.chan.imageboard.site.SiteFactory
+import com.github.rgbpx.chan.imageboard.site.SiteRegistry
 import com.github.rgbpx.chan.imageboard.site.di.SiteBindings
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
 import com.slack.circuit.foundation.Circuit
@@ -39,7 +39,7 @@ interface AppGraph {
     val circuit: Circuit
     val circuitSaver: CircuitSaver
     val appSettingsRepository: AppSettingsRepository
-    val siteFactory: SiteFactory
+    val siteRegistry: SiteRegistry
     val siteRepository: SiteRepository
 
     @Provides

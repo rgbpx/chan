@@ -17,8 +17,8 @@ internal class SiteRepositoryImpl(
     private val dataStore: DataStore<StoredSites>,
 ) : SiteRepository {
 
-    override val sites: Flow<List<SiteSettings>> = dataStore.data.map { stored ->
-        stored.sites.values.toList()
+    override val sites: Flow<Map<SiteId, SiteSettings>> = dataStore.data.map { stored ->
+        stored.sites
     }
 
     override suspend fun save(site: SiteSettings) {

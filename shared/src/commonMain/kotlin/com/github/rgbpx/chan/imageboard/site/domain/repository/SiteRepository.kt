@@ -5,7 +5,7 @@ import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import kotlinx.coroutines.flow.Flow
 
 interface SiteRepository {
-    val sites: Flow<List<SiteSettings>>
+    val sites: Flow<Map<SiteId, SiteSettings>>
 
     suspend fun save(site: SiteSettings)
 
