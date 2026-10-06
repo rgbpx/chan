@@ -18,36 +18,18 @@ internal class SiteRepositoryImpl(
 ) : SiteRepository {
 
     override val sites: Flow<List<SiteSettings>> = dataStore.data.map { stored ->
-        stored.sites
+        stored.sites.values.toList()
     }
 
-    override suspend fun add(site: SiteSettings) {
+    override suspend fun save(site: SiteSettings) {
         dataStore.updateData { stored ->
-            require(stored.sites.none { it.id == site.id }) {
-                "Site ${site.id} already exists"
-            }
-
-            stored.copy(sites = stored.sites + site)
-        }
-    }
-
-    override suspend fun update(site: SiteSettings) {
-        dataStore.updateData { stored ->
-            require(stored.sites.any { it.id == site.id }) {
-                "Site ${site.id} not found"
-            }
-
-            stored.copy(
-                sites = stored.sites.map { existing ->
-                    if (existing.id == site.id) site else existing
-                },
-            )
+            stored.copy(sites = stored.sites + (site.id to site))
         }
     }
 
     override suspend fun remove(id: SiteId) {
         dataStore.updateData { stored ->
-            stored.copy(sites = stored.sites.filterNot { it.id == id })
+            stored.copy(sites = stored.sites - id)
         }
     }
 }

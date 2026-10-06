@@ -7,9 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface SiteRepository {
     val sites: Flow<List<SiteSettings>>
 
-    suspend fun add(site: SiteSettings)
-
-    suspend fun update(site: SiteSettings)
+    suspend fun save(site: SiteSettings)
 
     suspend fun remove(id: SiteId)
 }
