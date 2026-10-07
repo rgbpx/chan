@@ -1,19 +1,21 @@
 package com.github.rgbpx.chan
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
-import androidx.compose.ui.window.rememberWindowState
+import androidx.compose.ui.window.v2.Window
+import androidx.compose.ui.window.v2.WindowBoundsProvider
+import androidx.compose.ui.window.v2.WindowPositionProvider
+import androidx.compose.ui.window.v2.WindowSizeProvider
+import androidx.compose.ui.window.v2.rememberWindowState
 import co.touchlab.kermit.Logger
 import com.github.rgbpx.chan.app.data.appMetadata
 import com.github.rgbpx.chan.app.ui.App
 import io.github.vinceglb.filekit.FileKit
-import java.awt.Dimension
 
+
+@OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     FileKit.init(appId = appMetadata.appName)
 
@@ -21,25 +23,21 @@ fun main() {
         Logger.withTag("App").i { "App started" }
 
         val windowState = rememberWindowState(
-            position = WindowPosition.Aligned(Alignment.Center),
+            initialBoundsProvider = WindowBoundsProvider(
+                positionProvider = WindowPositionProvider.CenteredOnScreen,
+                sizeProvider = WindowSizeProvider.Default,
+            ),
         )
 
         Window(
             onCloseRequest = ::exitApplication,
             title = appMetadata.appTitle,
             state = windowState,
+            minSize = DpSize(
+                width = appMetadata.minDefaultWidth.dp,
+                height = appMetadata.minDefaultHeight.dp,
+            ),
         ) {
-            val density = LocalDensity.current
-
-            LaunchedEffect(Unit) {
-                window.minimumSize = with(density) {
-                    Dimension(
-                        appMetadata.minDefaultWidth.dp.roundToPx(),
-                        appMetadata.minDefaultHeight.dp.roundToPx()
-                    )
-                }
-            }
-
             App(
                 onExitRequest = ::exitApplication,
             )
