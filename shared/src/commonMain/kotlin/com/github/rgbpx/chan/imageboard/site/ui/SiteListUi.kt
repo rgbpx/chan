@@ -37,16 +37,18 @@ fun SiteListUi(
                 modifier = modifier.fillMaxSize(),
             ) {
                 items(
-                    items = state.siteIds,
-                    key = { siteId -> siteId.value },
-                ) { siteId ->
+                    items = state.sitesSettings,
+                    key = { siteSettings -> siteSettings.id },
+                ) { siteSettings ->
                     ListItem(
                         headlineContent = {
-                            Text(siteId.value)
+                            Text(siteSettings.name)
                         },
                         modifier = Modifier.clickable {
                             state.eventSink(
-                                SiteListScreen.Event.SiteClicked(siteId)
+                                SiteListScreen.Event.SiteClicked(
+                                    engineId = siteSettings.engineId,
+                                )
                             )
                         },
                     )

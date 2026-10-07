@@ -3,6 +3,7 @@ package com.github.rgbpx.chan.imageboard.site.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.github.rgbpx.chan.app.di.AppScope
+import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.produceAndCollectAsRetainedState
@@ -13,19 +14,24 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 
 @AssistedInject
-class SiteListPresenter(
+class SiteSettingsPresenter(
+    @Assisted private val screen: SiteSettingsScreen,
     @Assisted private val navigator: Navigator,
     private val siteRepository: SiteRepository,
-) : Presenter<SiteListScreen.State> {
+    private val engineRegistry: EngineRegistry,
+) : Presenter<SiteSettingsScreen.State> {
 
-    @CircuitInject(SiteListScreen::class, AppScope::class)
+    @CircuitInject(SiteSettingsScreen::class, AppScope::class)
     @AssistedFactory
     fun interface Factory {
-        fun create(@Assisted navigator: Navigator): SiteListPresenter
+        fun create(
+            @Assisted screen: SiteSettingsScreen,
+            @Assisted navigator: Navigator,
+        ): SiteSettingsPresenter
     }
 
     @Composable
-    override fun present(): SiteListScreen.State {
+    override fun present(): SiteSettingsScreen.State {
         val sites by produceAndCollectAsRetainedState(
             initial = null,
         ) {
@@ -33,18 +39,15 @@ class SiteListPresenter(
         }
 
         return when (val sitesMap = sites) {
-            null -> SiteListScreen.State.Loading
+            null -> SiteSettingsScreen.State.Loading
 
-            else -> SiteListScreen.State.Loaded(
-                sitesSettings = sitesMap.values.toList(),
+            else -> SiteSettingsScreen.State.Loaded(
+                engines = engineRegistry.all()
+                    .map { it.id },
+                currentEngineId = screen.engineId,
                 eventSink = { event ->
                     when (event) {
-                        is SiteListScreen.Event.SiteClicked -> {
-                            navigator.goTo(
-                                SiteSettingsScreen(
-                                    engineId = event.engineId
-                                )
-                            )
+                        is SiteSettingsScreen.Event.EngineSelected -> {
                         }
                     }
                 },
