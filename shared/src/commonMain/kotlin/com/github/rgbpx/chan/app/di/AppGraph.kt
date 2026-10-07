@@ -6,6 +6,7 @@ import com.github.rgbpx.chan.feature.settings.data.local.createDataStore
 import com.github.rgbpx.chan.feature.settings.data.repository.AppSettingsRepositoryImpl
 import com.github.rgbpx.chan.feature.settings.domain.model.AppSettings
 import com.github.rgbpx.chan.feature.settings.domain.repository.AppSettingsRepository
+import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
 import com.github.rgbpx.chan.imageboard.site.SiteRegistry
 import com.github.rgbpx.chan.imageboard.site.di.SiteBindings
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
@@ -41,6 +42,7 @@ interface AppGraph {
     val appSettingsRepository: AppSettingsRepository
     val siteRegistry: SiteRegistry
     val siteRepository: SiteRepository
+    val engineRegistry: EngineRegistry
 
     @Provides
     fun provideCircuit(
