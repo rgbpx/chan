@@ -32,15 +32,19 @@ class SiteListPresenter(
             siteRepository.sites
         }
 
-        return when (val settings = sites) {
+        return when (val sitesMap = sites) {
             null -> SiteListScreen.State.Loading
 
             else -> SiteListScreen.State.Loaded(
-                siteIds = settings.keys.toList(),
+                sitesSettings = sitesMap.values.toList(),
                 eventSink = { event ->
                     when (event) {
                         is SiteListScreen.Event.SiteClicked -> {
-                            // navigator.goTo(SiteSettingsScreen(event.id))
+                            navigator.goTo(
+                                SiteSettingsScreen(
+                                    engineId = event.engineId
+                                )
+                            )
                         }
                     }
                 },

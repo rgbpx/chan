@@ -1,7 +1,8 @@
 package com.github.rgbpx.chan.imageboard.site.ui
 
 import com.github.rgbpx.chan.app.di.AppScope
-import com.github.rgbpx.chan.imageboard.site.domain.model.SiteId
+import com.github.rgbpx.chan.imageboard.engine.EngineId
+import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
@@ -13,14 +14,14 @@ data object SiteListScreen : Screen {
         data object Loading : State
 
         data class Loaded(
-            val siteIds: List<SiteId>,
+            val sitesSettings: List<SiteSettings>,
             val eventSink: (Event) -> Unit,
         ) : State
     }
 
     sealed interface Event : CircuitUiEvent {
         data class SiteClicked(
-            val id: SiteId,
+            val engineId: EngineId,
         ) : Event
     }
 }
