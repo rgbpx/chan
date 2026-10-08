@@ -1,7 +1,7 @@
 package com.github.rgbpx.chan.imageboard.site.ui
 
 import com.github.rgbpx.chan.app.di.AppScope
-import com.github.rgbpx.chan.imageboard.engine.EngineId
+import com.github.rgbpx.chan.imageboard.site.domain.model.SiteId
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -21,7 +21,7 @@ data object SiteListScreen : Screen {
 
     sealed interface Event : CircuitUiEvent {
         data class SiteClicked(
-            val engineId: EngineId,
+            val siteId: SiteId,
         ) : Event
     }
 }

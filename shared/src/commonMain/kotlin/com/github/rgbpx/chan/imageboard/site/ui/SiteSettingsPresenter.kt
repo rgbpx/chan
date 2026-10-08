@@ -41,17 +41,20 @@ class SiteSettingsPresenter(
         return when (val sitesMap = sites) {
             null -> SiteSettingsScreen.State.Loading
 
-            else -> SiteSettingsScreen.State.Loaded(
-                engines = engineRegistry.all()
-                    .map { it.id },
-                currentEngineId = screen.engineId,
-                eventSink = { event ->
-                    when (event) {
-                        is SiteSettingsScreen.Event.EngineSelected -> {
+            else -> when (val site = sitesMap[screen.siteId]) {
+                null -> SiteSettingsScreen.State.NotFound
+
+                else -> SiteSettingsScreen.State.Loaded(
+                    site = site,
+                    engineIds = engineRegistry.all().map { it.id },
+                    eventSink = { event ->
+                        when (event) {
+                            is SiteSettingsScreen.Event.EngineSelected -> {
+                            }
                         }
-                    }
-                },
-            )
+                    },
+                )
+            }
         }
     }
 }

@@ -2,6 +2,8 @@ package com.github.rgbpx.chan.imageboard.site.ui
 
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.EngineId
+import com.github.rgbpx.chan.imageboard.site.domain.model.SiteId
+import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
@@ -9,14 +11,17 @@ import com.slack.circuit.serialization.CircuitSerializable
 
 @CircuitSerializable(AppScope::class)
 data class SiteSettingsScreen(
-    val engineId: EngineId,
+    val siteId: SiteId,
 ) : Screen {
     sealed interface State : CircuitUiState {
         data object Loading : State
 
+        data object NotFound : State
+
         data class Loaded(
-            val engines: List<EngineId>,
-            val currentEngineId: EngineId,
+            val site: SiteSettings,
+//            val engines: List<EngineId>,
+            val engineIds: List<EngineId>,
             val eventSink: (Event) -> Unit,
         ) : State
     }
