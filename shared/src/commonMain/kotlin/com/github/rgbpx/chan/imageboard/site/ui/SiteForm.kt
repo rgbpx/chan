@@ -51,6 +51,9 @@ fun SiteForm(
             value = baseUrl,
             onValueChange = onBaseUrlChanged,
             label = { Text("Base URL") },
+            placeholder = {
+                Text("https://example.com")
+            },
             modifier = Modifier.fillMaxWidth(),
         )
 
