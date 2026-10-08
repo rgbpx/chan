@@ -41,7 +41,7 @@ class SiteListPresenter(
                     when (event) {
                         is SiteListScreen.Event.SiteClicked -> {
                             navigator.goTo(
-                                SiteSettingsScreen(
+                                EditSiteSettingsScreen(
                                     siteId = event.siteId
                                 )
                             )
