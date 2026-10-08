@@ -38,7 +38,7 @@ fun SiteListUi(
             ) {
                 items(
                     items = state.sitesSettings,
-                    key = { siteSettings -> siteSettings.id },
+                    key = { siteSettings -> siteSettings.id.value },
                 ) { siteSettings ->
                     ListItem(
                         headlineContent = {
