@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,8 +25,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.makaba.MakabaImageboardEngine
-import com.github.rgbpx.chan.imageboard.site.domain.model.SiteId
-import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.Inject
 
@@ -65,17 +64,23 @@ fun SiteSettingsUi(
                 modifier = modifier.padding(24.dp),
             ) {
                 OutlinedTextField(
-                    value = state.site.name,
-                    onValueChange = {},
-                    readOnly = true,
+                    value = state.name,
+                    onValueChange = {
+                        state.eventSink(
+                            SiteSettingsScreen.Event.NameChanged(it)
+                        )
+                    },
                     label = { Text("Name") },
                     modifier = Modifier.fillMaxWidth(),
                 )
 
                 OutlinedTextField(
-                    value = state.site.baseUrl,
-                    onValueChange = {},
-                    readOnly = true,
+                    value = state.baseUrl,
+                    onValueChange = {
+                        state.eventSink(
+                            SiteSettingsScreen.Event.BaseUrlChanged(it)
+                        )
+                    },
                     label = { Text("Base URL") },
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -87,7 +92,7 @@ fun SiteSettingsUi(
                     },
                 ) {
                     OutlinedTextField(
-                        value = state.site.engineId.value,
+                        value = state.engineId.value,
                         onValueChange = {},
                         readOnly = true,
                         label = { Text("Engine") },
@@ -124,6 +129,19 @@ fun SiteSettingsUi(
                         }
                     }
                 }
+
+                Button(
+                    onClick = {
+                        state.eventSink(
+                            SiteSettingsScreen.Event.SaveClicked
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                ) {
+                    Text("Save")
+                }
             }
         }
     }
@@ -134,12 +152,9 @@ fun SiteSettingsUi(
 private fun SiteSettingsUiPreview() {
     SiteSettingsUi(
         state = SiteSettingsScreen.State.Loaded(
-            site = SiteSettings(
-                id = SiteId("2ch"),
-                name = "2ch",
-                baseUrl = "https://2ch.su",
-                engineId = MakabaImageboardEngine.ID,
-            ),
+            name = "2ch",
+            baseUrl = "https://2ch.su",
+            engineId = MakabaImageboardEngine.ID,
             engineIds = listOf(MakabaImageboardEngine.ID),
             eventSink = {},
         ),
