@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.makaba.MakabaImageboardEngine
+import com.github.rgbpx.chan.imageboard.site.domain.model.SiteId
+import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.Inject
 
@@ -45,6 +47,15 @@ fun SiteSettingsUi(
             }
         }
 
+        SiteSettingsScreen.State.NotFound -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("Site not found")
+            }
+        }
+
         is SiteSettingsScreen.State.Loaded -> {
             var expanded by remember {
                 mutableStateOf(false)
@@ -53,6 +64,22 @@ fun SiteSettingsUi(
             Column(
                 modifier = modifier.padding(24.dp),
             ) {
+                OutlinedTextField(
+                    value = state.site.name,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Name") },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                OutlinedTextField(
+                    value = state.site.baseUrl,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Base URL") },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = {
@@ -60,12 +87,10 @@ fun SiteSettingsUi(
                     },
                 ) {
                     OutlinedTextField(
-                        value = state.currentEngineId.value,
+                        value = state.site.engineId.value,
                         onValueChange = {},
                         readOnly = true,
-                        label = {
-                            Text("Engine")
-                        },
+                        label = { Text("Engine") },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = expanded,
@@ -84,15 +109,15 @@ fun SiteSettingsUi(
                             expanded = false
                         },
                     ) {
-                        state.engines.forEach { engine ->
+                        state.engineIds.forEach { engineId ->
                             DropdownMenuItem(
                                 text = {
-                                    Text(engine.value)
+                                    Text(engineId.value)
                                 },
                                 onClick = {
                                     expanded = false
                                     state.eventSink(
-                                        SiteSettingsScreen.Event.EngineSelected(engine)
+                                        SiteSettingsScreen.Event.EngineSelected(engineId)
                                     )
                                 },
                             )
@@ -109,8 +134,13 @@ fun SiteSettingsUi(
 private fun SiteSettingsUiPreview() {
     SiteSettingsUi(
         state = SiteSettingsScreen.State.Loaded(
-            engines = listOf(MakabaImageboardEngine.ID),
-            currentEngineId = MakabaImageboardEngine.ID,
+            site = SiteSettings(
+                id = SiteId("2ch"),
+                name = "2ch",
+                baseUrl = "https://2ch.su",
+                engineId = MakabaImageboardEngine.ID,
+            ),
+            engineIds = listOf(MakabaImageboardEngine.ID),
             eventSink = {},
         ),
     )

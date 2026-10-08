@@ -47,7 +47,7 @@ fun SiteListUi(
                         modifier = Modifier.clickable {
                             state.eventSink(
                                 SiteListScreen.Event.SiteClicked(
-                                    engineId = siteSettings.engineId,
+                                    siteId = siteSettings.id,
                                 )
                             )
                         },

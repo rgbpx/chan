@@ -42,7 +42,7 @@ class SiteListPresenter(
                         is SiteListScreen.Event.SiteClicked -> {
                             navigator.goTo(
                                 SiteSettingsScreen(
-                                    engineId = event.engineId
+                                    siteId = event.siteId
                                 )
                             )
                         }
