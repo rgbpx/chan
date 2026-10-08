@@ -1,13 +1,18 @@
 package com.github.rgbpx.chan.imageboard.site.ui
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.makaba.MakabaImageboardEngine
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -40,33 +45,50 @@ fun EditSiteUi(
         }
 
         is EditSiteScreen.State.Loaded -> {
-            SiteForm(
-                name = state.name,
-                baseUrl = state.baseUrl,
-                engineId = state.engineId,
-                engineIds = state.engineIds,
-                onNameChanged = {
-                    state.eventSink(
-                        EditSiteScreen.Event.NameChanged(it)
-                    )
-                },
-                onBaseUrlChanged = {
-                    state.eventSink(
-                        EditSiteScreen.Event.BaseUrlChanged(it)
-                    )
-                },
-                onEngineSelected = {
-                    state.eventSink(
-                        EditSiteScreen.Event.EngineSelected(it)
-                    )
-                },
-                onSaveClicked = {
-                    state.eventSink(
-                        EditSiteScreen.Event.SaveClicked
-                    )
-                },
+            Column(
                 modifier = modifier,
-            )
+            ) {
+                SiteForm(
+                    name = state.name,
+                    baseUrl = state.baseUrl,
+                    engineId = state.engineId,
+                    engineIds = state.engineIds,
+                    onNameChanged = {
+                        state.eventSink(
+                            EditSiteScreen.Event.NameChanged(it)
+                        )
+                    },
+                    onBaseUrlChanged = {
+                        state.eventSink(
+                            EditSiteScreen.Event.BaseUrlChanged(it)
+                        )
+                    },
+                    onEngineSelected = {
+                        state.eventSink(
+                            EditSiteScreen.Event.EngineSelected(it)
+                        )
+                    },
+                    onSaveClicked = {
+                        state.eventSink(
+                            EditSiteScreen.Event.SaveClicked
+                        )
+                    },
+                    modifier = modifier,
+                )
+
+                Button(
+                    onClick = {
+                        state.eventSink(
+                            EditSiteScreen.Event.DeleteClicked
+                        )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                ) {
+                    Text("Delete")
+                }
+            }
         }
     }
 }

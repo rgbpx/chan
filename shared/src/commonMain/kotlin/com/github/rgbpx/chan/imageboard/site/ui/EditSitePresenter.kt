@@ -51,6 +51,7 @@ class EditSitePresenter(
                 null -> EditSiteScreen.State.NotFound
 
                 else -> presentLoaded(
+                    screen = screen,
                     navigator = navigator,
                     siteRepository = siteRepository,
                     engineRegistry = engineRegistry,
@@ -63,6 +64,7 @@ class EditSitePresenter(
 
 @Composable
 private fun presentLoaded(
+    screen: EditSiteScreen,
     navigator: Navigator,
     siteRepository: SiteRepository,
     engineRegistry: EngineRegistry,
@@ -102,6 +104,13 @@ private fun presentLoaded(
                             ),
                         )
 
+                        navigator.pop()
+                    }
+                }
+
+                EditSiteScreen.Event.DeleteClicked -> {
+                    scope.launch {
+                        siteRepository.remove(screen.siteId)
                         navigator.pop()
                     }
                 }
