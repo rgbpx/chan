@@ -3,7 +3,6 @@ package com.github.rgbpx.chan.imageboard.site.ui
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.EngineId
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteId
-import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
@@ -19,16 +18,21 @@ data class SiteSettingsScreen(
         data object NotFound : State
 
         data class Loaded(
-            val site: SiteSettings,
-//            val engines: List<EngineId>,
+            val name: String,
+            val baseUrl: String,
+            val engineId: EngineId,
             val engineIds: List<EngineId>,
             val eventSink: (Event) -> Unit,
         ) : State
     }
 
     sealed interface Event : CircuitUiEvent {
-        data class EngineSelected(
-            val engine: EngineId,
-        ) : Event
+        data class NameChanged(val name: String) : Event
+
+        data class BaseUrlChanged(val baseUrl: String) : Event
+
+        data class EngineSelected(val engineId: EngineId) : Event
+
+        data object SaveClicked : Event
     }
 }
