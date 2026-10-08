@@ -20,24 +20,24 @@ import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 
 @AssistedInject
-class EditSiteSettingsPresenter(
-    @Assisted private val screen: EditSiteSettingsScreen,
+class EditSitePresenter(
+    @Assisted private val screen: EditSiteScreen,
     @Assisted private val navigator: Navigator,
     private val siteRepository: SiteRepository,
     private val engineRegistry: EngineRegistry,
-) : Presenter<EditSiteSettingsScreen.State> {
+) : Presenter<EditSiteScreen.State> {
 
-    @CircuitInject(EditSiteSettingsScreen::class, AppScope::class)
+    @CircuitInject(EditSiteScreen::class, AppScope::class)
     @AssistedFactory
     fun interface Factory {
         fun create(
-            @Assisted screen: EditSiteSettingsScreen,
+            @Assisted screen: EditSiteScreen,
             @Assisted navigator: Navigator,
-        ): EditSiteSettingsPresenter
+        ): EditSitePresenter
     }
 
     @Composable
-    override fun present(): EditSiteSettingsScreen.State {
+    override fun present(): EditSiteScreen.State {
         val sites by produceAndCollectAsRetainedState(
             initial = null,
         ) {
@@ -45,10 +45,10 @@ class EditSiteSettingsPresenter(
         }
 
         return when (val sitesMap = sites) {
-            null -> EditSiteSettingsScreen.State.Loading
+            null -> EditSiteScreen.State.Loading
 
             else -> when (val site = sitesMap[screen.siteId]) {
-                null -> EditSiteSettingsScreen.State.NotFound
+                null -> EditSiteScreen.State.NotFound
 
                 else -> presentLoaded(
                     navigator = navigator,
@@ -67,32 +67,32 @@ private fun presentLoaded(
     siteRepository: SiteRepository,
     engineRegistry: EngineRegistry,
     site: SiteSettings
-): EditSiteSettingsScreen.State.Loaded {
+): EditSiteScreen.State.Loaded {
     var name by rememberRetained(site) { mutableStateOf(site.name) }
     var baseUrl by rememberRetained(site) { mutableStateOf(site.baseUrl) }
     var engineId by rememberRetained(site) { mutableStateOf(site.engineId) }
     val scope = rememberCoroutineScope()
 
-    return EditSiteSettingsScreen.State.Loaded(
+    return EditSiteScreen.State.Loaded(
         name = name,
         baseUrl = baseUrl,
         engineId = engineId,
         engineIds = engineRegistry.all().map { it.id },
         eventSink = { event ->
             when (event) {
-                is EditSiteSettingsScreen.Event.NameChanged -> {
+                is EditSiteScreen.Event.NameChanged -> {
                     name = event.name
                 }
 
-                is EditSiteSettingsScreen.Event.BaseUrlChanged -> {
+                is EditSiteScreen.Event.BaseUrlChanged -> {
                     baseUrl = event.baseUrl
                 }
 
-                is EditSiteSettingsScreen.Event.EngineSelected -> {
+                is EditSiteScreen.Event.EngineSelected -> {
                     engineId = event.engineId
                 }
 
-                EditSiteSettingsScreen.Event.SaveClicked -> {
+                EditSiteScreen.Event.SaveClicked -> {
                     scope.launch {
                         siteRepository.save(
                             site.copy(

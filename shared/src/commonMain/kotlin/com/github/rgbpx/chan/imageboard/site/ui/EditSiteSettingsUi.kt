@@ -13,15 +13,15 @@ import com.github.rgbpx.chan.imageboard.engine.makaba.MakabaImageboardEngine
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.Inject
 
-@CircuitInject(EditSiteSettingsScreen::class, AppScope::class)
+@CircuitInject(EditSiteScreen::class, AppScope::class)
 @Inject
 @Composable
-fun EditSiteSettingsUi(
-    state: EditSiteSettingsScreen.State,
+fun EditSiteUi(
+    state: EditSiteScreen.State,
     modifier: Modifier = Modifier,
 ) {
     when (state) {
-        EditSiteSettingsScreen.State.Loading -> {
+        EditSiteScreen.State.Loading -> {
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
@@ -30,7 +30,7 @@ fun EditSiteSettingsUi(
             }
         }
 
-        EditSiteSettingsScreen.State.NotFound -> {
+        EditSiteScreen.State.NotFound -> {
             Box(
                 modifier = modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
@@ -39,7 +39,7 @@ fun EditSiteSettingsUi(
             }
         }
 
-        is EditSiteSettingsScreen.State.Loaded -> {
+        is EditSiteScreen.State.Loaded -> {
             SiteForm(
                 name = state.name,
                 baseUrl = state.baseUrl,
@@ -47,22 +47,22 @@ fun EditSiteSettingsUi(
                 engineIds = state.engineIds,
                 onNameChanged = {
                     state.eventSink(
-                        EditSiteSettingsScreen.Event.NameChanged(it)
+                        EditSiteScreen.Event.NameChanged(it)
                     )
                 },
                 onBaseUrlChanged = {
                     state.eventSink(
-                        EditSiteSettingsScreen.Event.BaseUrlChanged(it)
+                        EditSiteScreen.Event.BaseUrlChanged(it)
                     )
                 },
                 onEngineSelected = {
                     state.eventSink(
-                        EditSiteSettingsScreen.Event.EngineSelected(it)
+                        EditSiteScreen.Event.EngineSelected(it)
                     )
                 },
                 onSaveClicked = {
                     state.eventSink(
-                        EditSiteSettingsScreen.Event.SaveClicked
+                        EditSiteScreen.Event.SaveClicked
                     )
                 },
                 modifier = modifier,
@@ -73,9 +73,9 @@ fun EditSiteSettingsUi(
 
 @Preview
 @Composable
-private fun EditSiteSettingsUiPreview() {
-    EditSiteSettingsUi(
-        state = EditSiteSettingsScreen.State.Loaded(
+private fun EditSiteUiPreview() {
+    EditSiteUi(
+        state = EditSiteScreen.State.Loaded(
             name = "2ch",
             baseUrl = "https://2ch.su",
             engineId = MakabaImageboardEngine.ID,
