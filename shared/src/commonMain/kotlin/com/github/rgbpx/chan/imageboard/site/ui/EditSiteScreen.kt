@@ -9,7 +9,7 @@ import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.serialization.CircuitSerializable
 
 @CircuitSerializable(AppScope::class)
-data class SiteSettingsScreen(
+data class EditSiteScreen(
     val siteId: SiteId,
 ) : Screen {
     sealed interface State : CircuitUiState {
@@ -34,5 +34,9 @@ data class SiteSettingsScreen(
         data class EngineSelected(val engineId: EngineId) : Event
 
         data object SaveClicked : Event
+
+        data object DeleteClicked : Event
+
+        data object CancelClicked : Event
     }
 }

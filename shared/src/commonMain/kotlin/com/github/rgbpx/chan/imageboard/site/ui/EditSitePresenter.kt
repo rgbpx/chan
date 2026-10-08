@@ -20,24 +20,24 @@ import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 
 @AssistedInject
-class SiteSettingsPresenter(
-    @Assisted private val screen: SiteSettingsScreen,
+class EditSitePresenter(
+    @Assisted private val screen: EditSiteScreen,
     @Assisted private val navigator: Navigator,
     private val siteRepository: SiteRepository,
     private val engineRegistry: EngineRegistry,
-) : Presenter<SiteSettingsScreen.State> {
+) : Presenter<EditSiteScreen.State> {
 
-    @CircuitInject(SiteSettingsScreen::class, AppScope::class)
+    @CircuitInject(EditSiteScreen::class, AppScope::class)
     @AssistedFactory
     fun interface Factory {
         fun create(
-            @Assisted screen: SiteSettingsScreen,
+            @Assisted screen: EditSiteScreen,
             @Assisted navigator: Navigator,
-        ): SiteSettingsPresenter
+        ): EditSitePresenter
     }
 
     @Composable
-    override fun present(): SiteSettingsScreen.State {
+    override fun present(): EditSiteScreen.State {
         val sites by produceAndCollectAsRetainedState(
             initial = null,
         ) {
@@ -45,12 +45,13 @@ class SiteSettingsPresenter(
         }
 
         return when (val sitesMap = sites) {
-            null -> SiteSettingsScreen.State.Loading
+            null -> EditSiteScreen.State.Loading
 
             else -> when (val site = sitesMap[screen.siteId]) {
-                null -> SiteSettingsScreen.State.NotFound
+                null -> EditSiteScreen.State.NotFound
 
                 else -> presentLoaded(
+                    screen = screen,
                     navigator = navigator,
                     siteRepository = siteRepository,
                     engineRegistry = engineRegistry,
@@ -63,36 +64,37 @@ class SiteSettingsPresenter(
 
 @Composable
 private fun presentLoaded(
+    screen: EditSiteScreen,
     navigator: Navigator,
     siteRepository: SiteRepository,
     engineRegistry: EngineRegistry,
     site: SiteSettings
-): SiteSettingsScreen.State.Loaded {
+): EditSiteScreen.State.Loaded {
     var name by rememberRetained(site) { mutableStateOf(site.name) }
     var baseUrl by rememberRetained(site) { mutableStateOf(site.baseUrl) }
     var engineId by rememberRetained(site) { mutableStateOf(site.engineId) }
     val scope = rememberCoroutineScope()
 
-    return SiteSettingsScreen.State.Loaded(
+    return EditSiteScreen.State.Loaded(
         name = name,
         baseUrl = baseUrl,
         engineId = engineId,
         engineIds = engineRegistry.all().map { it.id },
         eventSink = { event ->
             when (event) {
-                is SiteSettingsScreen.Event.NameChanged -> {
+                is EditSiteScreen.Event.NameChanged -> {
                     name = event.name
                 }
 
-                is SiteSettingsScreen.Event.BaseUrlChanged -> {
+                is EditSiteScreen.Event.BaseUrlChanged -> {
                     baseUrl = event.baseUrl
                 }
 
-                is SiteSettingsScreen.Event.EngineSelected -> {
+                is EditSiteScreen.Event.EngineSelected -> {
                     engineId = event.engineId
                 }
 
-                SiteSettingsScreen.Event.SaveClicked -> {
+                EditSiteScreen.Event.SaveClicked -> {
                     scope.launch {
                         siteRepository.save(
                             site.copy(
@@ -104,6 +106,17 @@ private fun presentLoaded(
 
                         navigator.pop()
                     }
+                }
+
+                EditSiteScreen.Event.DeleteClicked -> {
+                    scope.launch {
+                        siteRepository.remove(screen.siteId)
+                        navigator.pop()
+                    }
+                }
+
+                EditSiteScreen.Event.CancelClicked -> {
+                    navigator.pop()
                 }
             }
         },

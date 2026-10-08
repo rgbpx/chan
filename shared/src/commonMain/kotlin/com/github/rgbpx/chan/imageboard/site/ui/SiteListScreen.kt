@@ -20,6 +20,7 @@ data object SiteListScreen : Screen {
     }
 
     sealed interface Event : CircuitUiEvent {
+        data object AddClicked : Event
         data class SiteClicked(
             val siteId: SiteId,
         ) : Event
