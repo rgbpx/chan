@@ -114,6 +114,10 @@ private fun presentLoaded(
                         navigator.pop()
                     }
                 }
+
+                EditSiteScreen.Event.CancelClicked -> {
+                    navigator.pop()
+                }
             }
         },
     )

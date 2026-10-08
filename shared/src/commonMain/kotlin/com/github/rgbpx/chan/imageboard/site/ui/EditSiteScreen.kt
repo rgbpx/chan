@@ -36,5 +36,7 @@ data class EditSiteScreen(
         data object SaveClicked : Event
 
         data object DeleteClicked : Event
+
+        data object CancelClicked : Event
     }
 }
