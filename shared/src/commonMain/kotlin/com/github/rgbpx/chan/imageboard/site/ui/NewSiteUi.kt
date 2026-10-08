@@ -38,6 +38,11 @@ fun NewSiteUi(
                 NewSiteScreen.Event.SaveClicked
             )
         },
+        onCancelClicked = {
+            state.eventSink(
+                NewSiteScreen.Event.CancelClicked
+            )
+        },
         modifier = modifier,
     )
 }

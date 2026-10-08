@@ -25,5 +25,7 @@ data object NewSiteScreen : Screen {
         data class EngineSelected(val engineId: EngineId) : Event
 
         data object SaveClicked : Event
+
+        data object CancelClicked : Event
     }
 }

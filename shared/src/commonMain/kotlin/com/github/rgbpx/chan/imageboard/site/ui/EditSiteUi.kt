@@ -92,22 +92,14 @@ fun EditSiteUi(
                                 EditSiteScreen.Event.SaveClicked
                             )
                         },
-                        modifier = modifier,
-                    )
-
-                    OutlinedButton(
-                        onClick = {
+                        onCancelClicked = {
                             state.eventSink(
                                 EditSiteScreen.Event.CancelClicked
                             )
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp),
-                    ) {
-                        Text("Cancel")
-                    }
-
+                        modifier = modifier,
+                    )
+                    
                     OutlinedButton(
                         onClick = {
                             showDeleteConfirmation = true

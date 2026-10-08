@@ -87,6 +87,10 @@ class NewSitePresenter(
                             navigator.pop()
                         }
                     }
+
+                    NewSiteScreen.Event.CancelClicked -> {
+                        navigator.pop()
+                    }
                 }
             },
         )
