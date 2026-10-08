@@ -88,7 +88,11 @@ symbolCraft {
         pascalCase()
     }
 
-    materialSymbols("content_copy", "reset_settings") {
+    materialSymbols(
+        "content_copy",
+        "reset_settings",
+        "add"
+    ) {
         style(
             weight = 400,
             variant = SymbolVariant.OUTLINED,
