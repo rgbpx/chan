@@ -39,6 +39,10 @@ class SiteListPresenter(
                 sitesSettings = sitesMap.values.toList(),
                 eventSink = { event ->
                     when (event) {
+                        SiteListScreen.Event.AddClicked -> {
+                            navigator.goTo(NewSiteScreen)
+                        }
+                        
                         is SiteListScreen.Event.SiteClicked -> {
                             navigator.goTo(
                                 EditSiteScreen(
