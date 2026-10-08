@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -47,65 +48,72 @@ fun EditSiteUi(
         }
 
         is EditSiteScreen.State.Loaded -> {
-            Column(
-                modifier = modifier,
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
             ) {
-                SiteForm(
-                    name = state.name,
-                    baseUrl = state.baseUrl,
-                    engineId = state.engineId,
-                    engineIds = state.engineIds,
-                    onNameChanged = {
-                        state.eventSink(
-                            EditSiteScreen.Event.NameChanged(it)
-                        )
-                    },
-                    onBaseUrlChanged = {
-                        state.eventSink(
-                            EditSiteScreen.Event.BaseUrlChanged(it)
-                        )
-                    },
-                    onEngineSelected = {
-                        state.eventSink(
-                            EditSiteScreen.Event.EngineSelected(it)
-                        )
-                    },
-                    onSaveClicked = {
-                        state.eventSink(
-                            EditSiteScreen.Event.SaveClicked
-                        )
-                    },
-                    modifier = modifier,
-                )
-
-                OutlinedButton(
-                    onClick = {
-                        state.eventSink(
-                            EditSiteScreen.Event.CancelClicked
-                        )
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
+                Column(
+                    modifier = Modifier.widthIn(max = 480.dp),
                 ) {
-                    Text("Cancel")
-                }
+                    SiteForm(
+                        name = state.name,
+                        baseUrl = state.baseUrl,
+                        engineId = state.engineId,
+                        engineIds = state.engineIds,
+                        onNameChanged = {
+                            state.eventSink(
+                                EditSiteScreen.Event.NameChanged(it)
+                            )
+                        },
+                        onBaseUrlChanged = {
+                            state.eventSink(
+                                EditSiteScreen.Event.BaseUrlChanged(it)
+                            )
+                        },
+                        onEngineSelected = {
+                            state.eventSink(
+                                EditSiteScreen.Event.EngineSelected(it)
+                            )
+                        },
+                        onSaveClicked = {
+                            state.eventSink(
+                                EditSiteScreen.Event.SaveClicked
+                            )
+                        },
+                        modifier = modifier,
+                    )
 
-                OutlinedButton(
-                    onClick = {
-                        state.eventSink(
-                            EditSiteScreen.Event.DeleteClicked
-                        )
-                    },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                ) {
-                    Text("Delete")
+                    OutlinedButton(
+                        onClick = {
+                            state.eventSink(
+                                EditSiteScreen.Event.CancelClicked
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                    ) {
+                        Text("Cancel")
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            state.eventSink(
+                                EditSiteScreen.Event.DeleteClicked
+                            )
+                        },
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                    ) {
+                        Text("Delete")
+                    }
                 }
             }
         }
