@@ -18,8 +18,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.rgbpx.chan.imageboard.engine.EngineId
+import com.github.rgbpx.chan.imageboard.site.DEFAULT_ENGINE
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -127,6 +129,24 @@ fun SiteForm(
             Text("Cancel")
         }
     }
+}
+
+@Preview
+@Composable
+private fun SiteFormPreview() {
+    SiteForm(
+        name = "2ch",
+        baseUrl = "https://2ch.su",
+        engineId = DEFAULT_ENGINE,
+        engineIds = listOf(DEFAULT_ENGINE),
+        baseUrlError = null,
+        canSave = true,
+        onNameChanged = {},
+        onBaseUrlChanged = {},
+        onEngineSelected = {},
+        onSaveClicked = {},
+        onCancelClicked = {},
+    )
 }
 
 private fun baseUrlErrorMessage(error: BaseUrlError): String {
