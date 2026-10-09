@@ -1,7 +1,7 @@
 package com.github.rgbpx.chan.imageboard.engine.makaba
 
-import com.github.rgbpx.chan.imageboard.model.Board
-import com.github.rgbpx.chan.imageboard.model.BoardId
+import com.github.rgbpx.chan.imageboard.board.domain.model.Board
+import com.github.rgbpx.chan.imageboard.board.domain.model.BoardId
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,8 +1,8 @@
 package com.github.rgbpx.chan.imageboard.engine.makaba
 
+import com.github.rgbpx.chan.imageboard.board.domain.model.Board
 import com.github.rgbpx.chan.imageboard.engine.CommonImageboardEngine
 import com.github.rgbpx.chan.imageboard.engine.EngineId
-import com.github.rgbpx.chan.imageboard.model.Board
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
