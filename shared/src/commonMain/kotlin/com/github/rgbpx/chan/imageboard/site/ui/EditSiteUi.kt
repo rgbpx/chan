@@ -1,5 +1,6 @@
 package com.github.rgbpx.chan.imageboard.site.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -67,6 +69,18 @@ fun EditSiteUi(
                 Column(
                     modifier = Modifier.widthIn(max = 480.dp),
                 ) {
+                    ListItem(
+                        headlineContent = {
+                            Text("Boards")
+                        },
+                        supportingContent = {
+                            Text("Setup boards")
+                        },
+                        modifier = Modifier.clickable {
+                            state.eventSink(EditSiteScreen.Event.BoardsClicked)
+                        },
+                    )
+
                     SiteForm(
                         name = state.name,
                         baseUrl = state.baseUrl,

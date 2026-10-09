@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
+import com.github.rgbpx.chan.imageboard.board.ui.BoardListScreen
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
@@ -99,6 +100,12 @@ private fun presentLoaded(
 
                 is EditSiteScreen.Event.EngineSelected -> {
                     engineId = event.engineId
+                }
+
+                EditSiteScreen.Event.BoardsClicked -> {
+                    navigator.goTo(
+                        BoardListScreen(screen.siteId)
+                    )
                 }
 
                 EditSiteScreen.Event.SaveClicked -> {
