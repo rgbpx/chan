@@ -35,6 +35,8 @@ data class EditSiteScreen(
 
         data class EngineSelected(val engineId: EngineId) : Event
 
+        data object BoardsClicked : Event
+
         data object SaveClicked : Event
 
         data object DeleteClicked : Event

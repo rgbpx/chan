@@ -91,7 +91,9 @@ symbolCraft {
     materialSymbols(
         "content_copy",
         "reset_settings",
-        "add"
+        "add",
+        "arrow_back",
+        "refresh",
     ) {
         style(
             weight = 400,
