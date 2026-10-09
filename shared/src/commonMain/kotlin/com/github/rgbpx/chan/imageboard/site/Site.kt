@@ -1,7 +1,7 @@
 package com.github.rgbpx.chan.imageboard.site
 
+import com.github.rgbpx.chan.imageboard.board.domain.model.Board
 import com.github.rgbpx.chan.imageboard.engine.ImageboardEngine
-import com.github.rgbpx.chan.imageboard.model.Board
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 
 class Site(
