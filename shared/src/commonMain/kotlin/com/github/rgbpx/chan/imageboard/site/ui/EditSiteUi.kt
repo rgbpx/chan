@@ -97,9 +97,9 @@ fun EditSiteUi(
                                 EditSiteScreen.Event.CancelClicked
                             )
                         },
-                        modifier = modifier,
+                        modifier = Modifier,
                     )
-                    
+
                     OutlinedButton(
                         onClick = {
                             showDeleteConfirmation = true
