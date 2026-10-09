@@ -54,11 +54,18 @@ class NewSitePresenter(
 
         val scope = rememberCoroutineScope()
 
+        val baseUrlError = validateBaseUrl(baseUrl)
+        val canSave = name.isNotBlank() &&
+                baseUrl.isNotBlank() &&
+                baseUrlError == null
+
         return NewSiteScreen.State(
             name = name,
             baseUrl = baseUrl,
             engineId = engineId,
             engineIds = engineRegistry.all().map { it.id },
+            baseUrlError = baseUrlError,
+            canSave = canSave,
             eventSink = { event ->
                 when (event) {
                     is NewSiteScreen.Event.NameChanged -> {
@@ -74,17 +81,19 @@ class NewSitePresenter(
                     }
 
                     NewSiteScreen.Event.SaveClicked -> {
-                        scope.launch {
-                            siteRepository.save(
-                                SiteSettings(
-                                    id = siteId,
-                                    name = name,
-                                    baseUrl = baseUrl,
-                                    engineId = engineId,
+                        if (canSave) {
+                            scope.launch {
+                                siteRepository.save(
+                                    SiteSettings(
+                                        id = siteId,
+                                        name = name.trim(),
+                                        baseUrl = baseUrl.trim(),
+                                        engineId = engineId,
+                                    )
                                 )
-                            )
 
-                            navigator.pop()
+                                navigator.pop()
+                            }
                         }
                     }
 

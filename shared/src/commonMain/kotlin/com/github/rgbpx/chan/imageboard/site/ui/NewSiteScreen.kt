@@ -14,6 +14,8 @@ data object NewSiteScreen : Screen {
         val baseUrl: String,
         val engineId: EngineId,
         val engineIds: List<EngineId>,
+        val baseUrlError: BaseUrlError?,
+        val canSave: Boolean,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 

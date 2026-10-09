@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.rgbpx.chan.app.di.AppScope
-import com.github.rgbpx.chan.imageboard.engine.makaba.MakabaImageboardEngine
+import com.github.rgbpx.chan.imageboard.site.DEFAULT_ENGINE
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.zacsweers.metro.Inject
 
@@ -72,6 +72,8 @@ fun EditSiteUi(
                         baseUrl = state.baseUrl,
                         engineId = state.engineId,
                         engineIds = state.engineIds,
+                        baseUrlError = state.baseUrlError,
+                        canSave = state.canSave,
                         onNameChanged = {
                             state.eventSink(
                                 EditSiteScreen.Event.NameChanged(it)
@@ -97,9 +99,9 @@ fun EditSiteUi(
                                 EditSiteScreen.Event.CancelClicked
                             )
                         },
-                        modifier = modifier,
+                        modifier = Modifier,
                     )
-                    
+
                     OutlinedButton(
                         onClick = {
                             showDeleteConfirmation = true
@@ -165,8 +167,10 @@ private fun EditSiteUiPreview() {
         state = EditSiteScreen.State.Loaded(
             name = "2ch",
             baseUrl = "https://2ch.su",
-            engineId = MakabaImageboardEngine.ID,
-            engineIds = listOf(MakabaImageboardEngine.ID),
+            engineId = DEFAULT_ENGINE,
+            engineIds = listOf(DEFAULT_ENGINE),
+            baseUrlError = null,
+            canSave = true,
             eventSink = {},
         ),
     )

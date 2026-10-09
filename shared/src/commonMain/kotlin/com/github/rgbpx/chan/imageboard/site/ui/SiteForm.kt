@@ -18,8 +18,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.rgbpx.chan.imageboard.engine.EngineId
+import com.github.rgbpx.chan.imageboard.site.DEFAULT_ENGINE
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,6 +30,8 @@ fun SiteForm(
     baseUrl: String,
     engineId: EngineId,
     engineIds: List<EngineId>,
+    baseUrlError: BaseUrlError?,
+    canSave: Boolean,
     onNameChanged: (String) -> Unit,
     onBaseUrlChanged: (String) -> Unit,
     onEngineSelected: (EngineId) -> Unit,
@@ -53,8 +57,12 @@ fun SiteForm(
             value = baseUrl,
             onValueChange = onBaseUrlChanged,
             label = { Text("Base URL") },
-            placeholder = {
-                Text("https://example.com")
+            placeholder = { Text("https://example.com") },
+            isError = baseUrlError != null,
+            supportingText = if (baseUrlError != null) {
+                { Text(baseUrlErrorMessage(baseUrlError)) }
+            } else {
+                null
             },
             modifier = Modifier.fillMaxWidth(),
         )
@@ -104,7 +112,7 @@ fun SiteForm(
 
         Button(
             onClick = onSaveClicked,
-            enabled = name.isNotBlank() && baseUrl.isNotBlank(),
+            enabled = canSave,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
@@ -120,5 +128,30 @@ fun SiteForm(
         ) {
             Text("Cancel")
         }
+    }
+}
+
+@Preview
+@Composable
+private fun SiteFormPreview() {
+    SiteForm(
+        name = "2ch",
+        baseUrl = "https://2ch.su",
+        engineId = DEFAULT_ENGINE,
+        engineIds = listOf(DEFAULT_ENGINE),
+        baseUrlError = null,
+        canSave = true,
+        onNameChanged = {},
+        onBaseUrlChanged = {},
+        onEngineSelected = {},
+        onSaveClicked = {},
+        onCancelClicked = {},
+    )
+}
+
+private fun baseUrlErrorMessage(error: BaseUrlError): String {
+    return when (error) {
+        BaseUrlError.InvalidScheme -> "Address must start with http:// or https://"
+        BaseUrlError.InvalidHost -> "Enter a valid address, for example https://example.com"
     }
 }
