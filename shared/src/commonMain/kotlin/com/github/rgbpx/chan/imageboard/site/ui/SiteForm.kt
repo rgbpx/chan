@@ -28,6 +28,8 @@ fun SiteForm(
     baseUrl: String,
     engineId: EngineId,
     engineIds: List<EngineId>,
+    baseUrlError: BaseUrlError?,
+    canSave: Boolean,
     onNameChanged: (String) -> Unit,
     onBaseUrlChanged: (String) -> Unit,
     onEngineSelected: (EngineId) -> Unit,
@@ -53,8 +55,12 @@ fun SiteForm(
             value = baseUrl,
             onValueChange = onBaseUrlChanged,
             label = { Text("Base URL") },
-            placeholder = {
-                Text("https://example.com")
+            placeholder = { Text("https://example.com") },
+            isError = baseUrlError != null,
+            supportingText = if (baseUrlError != null) {
+                { Text(baseUrlErrorMessage(baseUrlError)) }
+            } else {
+                null
             },
             modifier = Modifier.fillMaxWidth(),
         )
@@ -104,7 +110,7 @@ fun SiteForm(
 
         Button(
             onClick = onSaveClicked,
-            enabled = name.isNotBlank() && baseUrl.isNotBlank(),
+            enabled = canSave,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp),
@@ -120,5 +126,12 @@ fun SiteForm(
         ) {
             Text("Cancel")
         }
+    }
+}
+
+private fun baseUrlErrorMessage(error: BaseUrlError): String {
+    return when (error) {
+        BaseUrlError.InvalidScheme -> "Address must start with http:// or https://"
+        BaseUrlError.InvalidHost -> "Enter a valid address, for example https://example.com"
     }
 }

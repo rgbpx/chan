@@ -18,6 +18,8 @@ fun NewSiteUi(
         baseUrl = state.baseUrl,
         engineId = state.engineId,
         engineIds = state.engineIds,
+        baseUrlError = state.baseUrlError,
+        canSave = state.canSave,
         onNameChanged = {
             state.eventSink(
                 NewSiteScreen.Event.NameChanged(it)

@@ -72,6 +72,8 @@ fun EditSiteUi(
                         baseUrl = state.baseUrl,
                         engineId = state.engineId,
                         engineIds = state.engineIds,
+                        baseUrlError = state.baseUrlError,
+                        canSave = state.canSave,
                         onNameChanged = {
                             state.eventSink(
                                 EditSiteScreen.Event.NameChanged(it)
@@ -167,6 +169,8 @@ private fun EditSiteUiPreview() {
             baseUrl = "https://2ch.su",
             engineId = MakabaImageboardEngine.ID,
             engineIds = listOf(MakabaImageboardEngine.ID),
+            baseUrlError = null,
+            canSave = true,
             eventSink = {},
         ),
     )

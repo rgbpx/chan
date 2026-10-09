@@ -75,11 +75,18 @@ private fun presentLoaded(
     var engineId by rememberRetained(site) { mutableStateOf(site.engineId) }
     val scope = rememberCoroutineScope()
 
+    val baseUrlError = validateBaseUrl(baseUrl)
+    val canSave = name.isNotBlank() &&
+            baseUrl.isNotBlank() &&
+            baseUrlError == null
+
     return EditSiteScreen.State.Loaded(
         name = name,
         baseUrl = baseUrl,
         engineId = engineId,
         engineIds = engineRegistry.all().map { it.id },
+        baseUrlError = baseUrlError,
+        canSave = canSave,
         eventSink = { event ->
             when (event) {
                 is EditSiteScreen.Event.NameChanged -> {
@@ -95,16 +102,18 @@ private fun presentLoaded(
                 }
 
                 EditSiteScreen.Event.SaveClicked -> {
-                    scope.launch {
-                        siteRepository.save(
-                            site.copy(
-                                name = name,
-                                baseUrl = baseUrl,
-                                engineId = engineId,
-                            ),
-                        )
+                    if (canSave) {
+                        scope.launch {
+                            siteRepository.save(
+                                site.copy(
+                                    name = name.trim(),
+                                    baseUrl = baseUrl.trim(),
+                                    engineId = engineId,
+                                ),
+                            )
 
-                        navigator.pop()
+                            navigator.pop()
+                        }
                     }
                 }
 
