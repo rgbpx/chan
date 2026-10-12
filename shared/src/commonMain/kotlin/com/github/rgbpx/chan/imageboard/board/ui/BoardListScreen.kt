@@ -26,7 +26,10 @@ data class BoardListScreen(
 
         data class Error(val message: String) : Content
 
-        data class Loaded(val boards: List<Board>) : Content
+        data class Loaded(
+            val added: List<Board>,
+            val available: List<Board>,
+        ) : Content
     }
 
     sealed interface Event : CircuitUiEvent {

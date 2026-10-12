@@ -81,7 +81,7 @@ fun BoardListUi(
                         modifier = Modifier.fillMaxSize(),
                     ) {
                         items(
-                            items = content.boards,
+                            items = content.added + content.available,
                             key = { board -> board.id.value },
                         ) { board ->
                             ListItem(
@@ -138,8 +138,10 @@ private fun BoardListUiPreview() {
     BoardListUi(
         state = BoardListScreen.State(
             content = BoardListScreen.Content.Loaded(
-                boards = listOf(
+                added = listOf(
                     Board(id = BoardId("b"), name = "Бред"),
+                ),
+                available = listOf(
                     Board(id = BoardId("a"), name = "Аниме"),
                 ),
             ),

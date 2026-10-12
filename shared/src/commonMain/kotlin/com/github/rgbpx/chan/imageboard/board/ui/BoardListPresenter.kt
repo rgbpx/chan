@@ -99,12 +99,26 @@ private fun presentBoards(
         value = loadBoards(engine)
     }
 
-    return content
+    return when (val current = content) {
+        is BoardListScreen.Content.Loaded -> {
+            BoardListScreen.Content.Loaded(
+                added = site.boards.values.toList(),
+                available = current.available.filter { board ->
+                    board.id !in site.boards
+                },
+            )
+        }
+
+        else -> current
+    }
 }
 
 private suspend fun loadBoards(engine: ImageboardEngine): BoardListScreen.Content {
     return try {
-        BoardListScreen.Content.Loaded(engine.loadBoards())
+        BoardListScreen.Content.Loaded(
+            added = emptyList(),
+            available = engine.loadBoards(),
+        )
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
