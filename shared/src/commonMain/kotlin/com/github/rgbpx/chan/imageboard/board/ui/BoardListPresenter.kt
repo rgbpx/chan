@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
@@ -21,6 +22,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 @AssistedInject
 class BoardListPresenter(
@@ -41,6 +43,7 @@ class BoardListPresenter(
 
     @Composable
     override fun present(): BoardListScreen.State {
+        val scope = rememberCoroutineScope()
         var reloadKey by rememberRetained { mutableIntStateOf(0) }
 
         val sites by produceAndCollectAsRetainedState(
@@ -74,6 +77,24 @@ class BoardListPresenter(
                     BoardListScreen.Event.RefreshClicked -> {
                         reloadKey += 1
                     }
+
+                    is BoardListScreen.Event.AddBoardClicked -> {
+                        scope.launch {
+                            siteRepository.addBoard(
+                                screen.siteId,
+                                event.board,
+                            )
+                        }
+                    }
+
+                    is BoardListScreen.Event.RemoveBoardClicked -> {
+                        scope.launch {
+                            siteRepository.removeBoard(
+                                screen.siteId,
+                                event.boardId,
+                            )
+                        }
+                    }
                 }
             },
         )
@@ -86,7 +107,7 @@ private fun presentBoards(
     site: SiteSettings,
     reloadKey: Int,
 ): BoardListScreen.Content {
-    val engine = remember(factory, site) {
+    val engine = remember(factory, site.baseUrl, site.engineId) {
         factory.create(site)
     }
 
@@ -99,12 +120,26 @@ private fun presentBoards(
         value = loadBoards(engine)
     }
 
-    return content
+    return when (val current = content) {
+        is BoardListScreen.Content.Loaded -> {
+            BoardListScreen.Content.Loaded(
+                added = site.boards.values.toList(),
+                available = current.available.filter { board ->
+                    board.id !in site.boards
+                },
+            )
+        }
+
+        else -> current
+    }
 }
 
 private suspend fun loadBoards(engine: ImageboardEngine): BoardListScreen.Content {
     return try {
-        BoardListScreen.Content.Loaded(engine.loadBoards())
+        BoardListScreen.Content.Loaded(
+            added = emptyList(),
+            available = engine.loadBoards(),
+        )
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {

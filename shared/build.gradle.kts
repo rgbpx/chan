@@ -94,6 +94,7 @@ symbolCraft {
         "add",
         "arrow_back",
         "refresh",
+        "close",
     ) {
         style(
             weight = 400,
