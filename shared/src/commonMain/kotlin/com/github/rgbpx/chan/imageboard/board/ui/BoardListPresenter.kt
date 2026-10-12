@@ -86,7 +86,7 @@ private fun presentBoards(
     site: SiteSettings,
     reloadKey: Int,
 ): BoardListScreen.Content {
-    val engine = remember(factory, site) {
+    val engine = remember(factory, site.baseUrl, site.engineId) {
         factory.create(site)
     }
 
