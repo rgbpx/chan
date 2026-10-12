@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
@@ -21,6 +22,7 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 @AssistedInject
 class BoardListPresenter(
@@ -41,6 +43,7 @@ class BoardListPresenter(
 
     @Composable
     override fun present(): BoardListScreen.State {
+        val scope = rememberCoroutineScope()
         var reloadKey by rememberRetained { mutableIntStateOf(0) }
 
         val sites by produceAndCollectAsRetainedState(
@@ -73,6 +76,24 @@ class BoardListPresenter(
 
                     BoardListScreen.Event.RefreshClicked -> {
                         reloadKey += 1
+                    }
+
+                    is BoardListScreen.Event.AddBoardClicked -> {
+                        scope.launch {
+                            siteRepository.addBoard(
+                                screen.siteId,
+                                event.board,
+                            )
+                        }
+                    }
+
+                    is BoardListScreen.Event.RemoveBoardClicked -> {
+                        scope.launch {
+                            siteRepository.removeBoard(
+                                screen.siteId,
+                                event.boardId,
+                            )
+                        }
                     }
                 }
             },

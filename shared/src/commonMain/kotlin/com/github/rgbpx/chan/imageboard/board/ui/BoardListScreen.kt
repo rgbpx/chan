@@ -2,6 +2,7 @@ package com.github.rgbpx.chan.imageboard.board.ui
 
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.board.domain.model.Board
+import com.github.rgbpx.chan.imageboard.board.domain.model.BoardId
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteId
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -36,5 +37,9 @@ data class BoardListScreen(
         data object BackClicked : Event
 
         data object RefreshClicked : Event
+
+        data class AddBoardClicked(val board: Board) : Event
+
+        data class RemoveBoardClicked(val boardId: BoardId) : Event
     }
 }
