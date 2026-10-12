@@ -37,22 +37,16 @@ internal class SiteRepositoryImpl(
 
     override suspend fun addBoard(siteId: SiteId, board: Board) {
         updateSite(siteId) { site ->
-            when {
-                site.boards.any { it.id == board.id } -> site
-
-                else -> site.copy(
-                    boards = site.boards + board
-                )
-            }
+            site.copy(
+                boards = site.boards + (board.id to board)
+            )
         }
     }
 
     override suspend fun removeBoard(siteId: SiteId, boardId: BoardId) {
         updateSite(siteId) { site ->
             site.copy(
-                boards = site.boards.filter {
-                    it.id != boardId
-                }
+                boards = site.boards - boardId
             )
         }
     }
