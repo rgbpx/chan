@@ -16,4 +16,6 @@ interface SiteRepository {
     suspend fun addBoard(siteId: SiteId, board: Board)
 
     suspend fun removeBoard(siteId: SiteId, boardId: BoardId)
+
+    suspend fun removeBoards(siteId: SiteId, boardIds: Set<BoardId>)
 }
