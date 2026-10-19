@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -50,8 +51,13 @@ fun BoardListUi(
         modifier = modifier.fillMaxSize(),
         topBar = {
             BoardListTopBar(
-                refreshEnabled = content is BoardListScreen.Content.Loaded ||
-                        content is BoardListScreen.Content.Error,
+                refreshEnabled = when (content) {
+                    is BoardListScreen.Content.Loaded -> {
+                        content.available !is BoardListScreen.AvailableBoards.Loading
+                    }
+
+                    else -> false
+                },
                 onBackClicked = {
                     state.eventSink(BoardListScreen.Event.BackClicked)
                 },
@@ -78,13 +84,6 @@ fun BoardListUi(
 
                 BoardListScreen.Content.UnknownEngine -> {
                     Text("Unknown engine")
-                }
-
-                is BoardListScreen.Content.Error -> {
-                    Text(
-                        text = content.message,
-                        modifier = Modifier.padding(24.dp),
-                    )
                 }
 
                 is BoardListScreen.Content.Loaded -> {
@@ -124,46 +123,76 @@ fun BoardListUi(
                                     },
                                 )
                             }
+
+                            item(key = "separator") {
+                                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                            }
                         }
 
-                        if (content.available.isNotEmpty()) {
-                            if (content.added.isNotEmpty()) {
-                                item(key = "separator") {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(vertical = 12.dp),
+                        item(key = "header:available") {
+                            Text(
+                                text = "Available boards",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            )
+                        }
+
+                        when (val available = content.available) {
+                            BoardListScreen.AvailableBoards.Loading -> {
+                                item(key = "available:loading") {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(24.dp),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
+                            }
+
+                            is BoardListScreen.AvailableBoards.Error -> {
+                                item(key = "available:error") {
+                                    Text(
+                                        text = available.message,
+                                        modifier = Modifier.padding(24.dp),
                                     )
                                 }
                             }
 
-                            item(key = "header:available") {
-                                Text(
-                                    text = "Available boards",
-                                    style = MaterialTheme.typography.titleSmall,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(
-                                        horizontal = 16.dp,
-                                        vertical = 8.dp
-                                    ),
-                                )
-                            }
+                            is BoardListScreen.AvailableBoards.Loaded -> {
+                                when {
+                                    available.boards.isEmpty() -> {
+                                        item(key = "available:empty") {
+                                            Text(
+                                                text = "No boards available",
+                                                modifier = Modifier.padding(24.dp),
+                                            )
+                                        }
+                                    }
 
-                            itemsIndexed(
-                                items = content.available,
-                                key = { _, board -> board.id.value },
-                            ) { index, board ->
-                                BoardListItem(
-                                    board = board,
-                                    index = index,
-                                    count = content.available.size,
-                                    dimmed = true,
-                                    actionIcon = Icons.AddW400Outlined,
-                                    actionDescription = "Add board",
-                                    onActionClicked = {
-                                        state.eventSink(
-                                            BoardListScreen.Event.AddBoardClicked(board)
-                                        )
-                                    },
-                                )
+                                    else -> {
+                                        itemsIndexed(
+                                            items = available.boards,
+                                            key = { _, board -> board.id.value },
+                                        ) { index, board ->
+                                            BoardListItem(
+                                                board = board,
+                                                index = index,
+                                                count = available.boards.size,
+                                                dimmed = true,
+                                                actionIcon = Icons.AddW400Outlined,
+                                                actionDescription = "Add board",
+                                                onActionClicked = {
+                                                    state.eventSink(
+                                                        BoardListScreen.Event.AddBoardClicked(board)
+                                                    )
+                                                },
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -252,8 +281,10 @@ private fun BoardListUiPreview() {
                 added = listOf(
                     Board(id = BoardId("b"), name = "Бред"),
                 ),
-                available = listOf(
-                    Board(id = BoardId("a"), name = "Аниме"),
+                available = BoardListScreen.AvailableBoards.Loaded(
+                    listOf(
+                        Board(id = BoardId("a"), name = "Аниме"),
+                    ),
                 ),
             ),
             eventSink = {},
