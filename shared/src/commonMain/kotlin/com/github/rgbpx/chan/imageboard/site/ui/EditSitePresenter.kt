@@ -71,9 +71,9 @@ private fun presentLoaded(
     engineRegistry: EngineRegistry,
     site: SiteSettings
 ): EditSiteScreen.State.Loaded {
-    var name by rememberRetained(site) { mutableStateOf(site.name) }
-    var baseUrl by rememberRetained(site) { mutableStateOf(site.baseUrl) }
-    var engineId by rememberRetained(site) { mutableStateOf(site.engineId) }
+    var name by rememberRetained(site.name) { mutableStateOf(site.name) }
+    var baseUrl by rememberRetained(site.baseUrl) { mutableStateOf(site.baseUrl) }
+    var engineId by rememberRetained(site.engineId) { mutableStateOf(site.engineId) }
     val scope = rememberCoroutineScope()
 
     val baseUrlError = validateBaseUrl(baseUrl)
@@ -111,11 +111,17 @@ private fun presentLoaded(
                 EditSiteScreen.Event.SaveClicked -> {
                     if (canSave) {
                         scope.launch {
+                            val boards = when (engineId) {
+                                site.engineId -> site.boards
+                                else -> emptyMap()
+                            }
+
                             siteRepository.save(
                                 site.copy(
                                     name = name.trim(),
                                     baseUrl = baseUrl.trim(),
                                     engineId = engineId,
+                                    boards = boards,
                                 ),
                             )
 
