@@ -8,7 +8,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
-import com.github.rgbpx.chan.imageboard.engine.ImageboardEngine
 import com.github.rgbpx.chan.imageboard.engine.ImageboardEngineFactory
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
@@ -61,7 +60,7 @@ class BoardListPresenter(
                 else -> when (val engineFactory = engineRegistry.get(siteSettings.engineId)) {
                     null -> BoardListScreen.Content.UnknownEngine
 
-                    else -> presentBoards(engineFactory, siteSettings, reloadKey)
+                    else -> presentBoards(engineFactory, siteSettings, reloadKey, siteRepository)
                 }
             }
         }
@@ -106,46 +105,56 @@ private fun presentBoards(
     factory: ImageboardEngineFactory,
     site: SiteSettings,
     reloadKey: Int,
-): BoardListScreen.Content {
+    siteRepository: SiteRepository,
+): BoardListScreen.Content.Loaded {
     val engine = remember(factory, site.baseUrl, site.engineId) {
         factory.create(site)
     }
 
-    val content by produceRetainedState<BoardListScreen.Content>(
-        initialValue = BoardListScreen.Content.Loading,
+    val loadResult by produceRetainedState<BoardListScreen.AvailableBoards>(
+        initialValue = BoardListScreen.AvailableBoards.Loading,
         engine,
         reloadKey,
     ) {
-        value = BoardListScreen.Content.Loading
-        value = loadBoards(engine)
+        value = BoardListScreen.AvailableBoards.Loading
+
+        val result = try {
+            BoardListScreen.AvailableBoards.Loaded(engine.loadBoards())
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            when (val message = e.message) {
+                null -> BoardListScreen.AvailableBoards.Error(e.toString())
+                else -> BoardListScreen.AvailableBoards.Error(message)
+            }
+        }
+
+        value = result
+
+        if (result is BoardListScreen.AvailableBoards.Loaded && result.boards.isNotEmpty()) {
+            val loadedIds = result.boards.map { board -> board.id }.toSet()
+            val missingIds = site.boards.keys - loadedIds
+
+            if (missingIds.isNotEmpty()) {
+                siteRepository.removeBoards(site.id, missingIds)
+            }
+        }
     }
 
-    return when (val current = content) {
-        is BoardListScreen.Content.Loaded -> {
-            BoardListScreen.Content.Loaded(
-                added = site.boards.values.toList(),
-                available = current.available.filter { board ->
+    val available = when (val result = loadResult) {
+        is BoardListScreen.AvailableBoards.Loaded -> {
+            BoardListScreen.AvailableBoards.Loaded(
+                result.boards.filter { board ->
                     board.id !in site.boards
-                },
+                }
             )
         }
 
-        else -> current
+        else -> result
     }
-}
 
-private suspend fun loadBoards(engine: ImageboardEngine): BoardListScreen.Content {
-    return try {
-        BoardListScreen.Content.Loaded(
-            added = emptyList(),
-            available = engine.loadBoards(),
-        )
-    } catch (e: CancellationException) {
-        throw e
-    } catch (e: Exception) {
-        when (val message = e.message) {
-            null -> BoardListScreen.Content.Error(e.toString())
-            else -> BoardListScreen.Content.Error(message)
-        }
-    }
+    return BoardListScreen.Content.Loaded(
+        added = site.boards.values.toList(),
+        available = available,
+    )
 }

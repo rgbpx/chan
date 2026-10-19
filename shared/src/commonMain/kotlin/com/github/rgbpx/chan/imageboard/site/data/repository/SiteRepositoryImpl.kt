@@ -51,6 +51,14 @@ internal class SiteRepositoryImpl(
         }
     }
 
+    override suspend fun removeBoards(siteId: SiteId, boardIds: Set<BoardId>) {
+        updateSite(siteId) { site ->
+            site.copy(
+                boards = site.boards - boardIds
+            )
+        }
+    }
+
     private suspend fun updateSite(
         id: SiteId,
         transform: (SiteSettings) -> SiteSettings,

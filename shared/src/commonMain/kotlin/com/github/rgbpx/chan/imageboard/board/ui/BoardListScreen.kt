@@ -25,12 +25,18 @@ data class BoardListScreen(
 
         data object UnknownEngine : Content
 
-        data class Error(val message: String) : Content
-
         data class Loaded(
             val added: List<Board>,
-            val available: List<Board>,
+            val available: AvailableBoards,
         ) : Content
+    }
+
+    sealed interface AvailableBoards {
+        data object Loading : AvailableBoards
+
+        data class Error(val message: String) : AvailableBoards
+
+        data class Loaded(val boards: List<Board>) : AvailableBoards
     }
 
     sealed interface Event : CircuitUiEvent {
