@@ -7,7 +7,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
+import com.github.rgbpx.chan.imageboard.board.domain.model.Board
+import com.github.rgbpx.chan.imageboard.board.domain.model.BoardId
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
+import com.github.rgbpx.chan.imageboard.engine.ImageboardEngine
 import com.github.rgbpx.chan.imageboard.engine.ImageboardEngineFactory
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
@@ -115,6 +118,21 @@ private fun presentBoards(
         factory.create(site)
     }
 
+    val remoteBoards = produceRemoteBoards(engine, site, reloadKey, siteRepository)
+
+    return BoardListScreen.Content.Loaded(
+        added = site.boards.values.toList(),
+        available = availableBoards(remoteBoards, site.boards.keys),
+    )
+}
+
+@Composable
+private fun produceRemoteBoards(
+    engine: ImageboardEngine,
+    site: SiteSettings,
+    reloadKey: Int,
+    siteRepository: SiteRepository,
+): BoardListScreen.RemoteBoards {
     val remoteBoardsState by produceRetainedState<BoardListScreen.RemoteBoards>(
         initialValue = BoardListScreen.RemoteBoards.Loading,
         engine,
@@ -122,18 +140,7 @@ private fun presentBoards(
     ) {
         value = BoardListScreen.RemoteBoards.Loading
 
-        // Load remote boards
-        val loadedOrErrorState = try {
-            BoardListScreen.RemoteBoards.Loaded(engine.loadBoards())
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            when (val message = e.message) {
-                null -> BoardListScreen.RemoteBoards.Error(e.toString())
-                else -> BoardListScreen.RemoteBoards.Error(message)
-            }
-        }
-
+        val loadedOrErrorState = loadRemoteBoards(engine)
         value = loadedOrErrorState
 
         // Get remote boards from loaded state
@@ -142,39 +149,61 @@ private fun presentBoards(
             else -> emptyList()
         }
 
-        when {
-            remoteBoards.isNotEmpty() -> {
-                val remoteBoardIds = remoteBoards.map { board -> board.id }.toSet()
-                val staleBoardIds = site.boards.keys - remoteBoardIds
+        removeStaleBoards(siteRepository, site, remoteBoards)
+    }
 
-                when {
-                    // Remove stale local boards (not present on remote anymore)
-                    // TODO: Cleanup errors are not handled yet. A failed write here is not caught.
-                    staleBoardIds.isNotEmpty() -> siteRepository.removeBoards(
-                        site.id,
-                        staleBoardIds
-                    )
-                }
+    return remoteBoardsState
+}
+
+private suspend fun loadRemoteBoards(
+    engine: ImageboardEngine,
+): BoardListScreen.RemoteBoards {
+    return try {
+        BoardListScreen.RemoteBoards.Loaded(engine.loadBoards())
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        when (val message = e.message) {
+            null -> BoardListScreen.RemoteBoards.Error(e.toString())
+            else -> BoardListScreen.RemoteBoards.Error(message)
+        }
+    }
+}
+
+private suspend fun removeStaleBoards(
+    siteRepository: SiteRepository,
+    site: SiteSettings,
+    remoteBoards: List<Board>,
+) {
+    when {
+        remoteBoards.isNotEmpty() -> {
+            val remoteBoardIds = remoteBoards.map { board -> board.id }.toSet()
+            val staleBoardIds = site.boards.keys - remoteBoardIds
+
+            when {
+                // TODO: Cleanup errors are not handled yet. A failed write here is not caught.
+                // Remove stale local boards (not present on remote anymore)
+                staleBoardIds.isNotEmpty() -> siteRepository.removeBoards(
+                    site.id,
+                    staleBoardIds
+                )
             }
         }
     }
+}
 
-    // Compute available board list
-    val availableBoards = when (val remoteState = remoteBoardsState) {
+private fun availableBoards(
+    remote: BoardListScreen.RemoteBoards,
+    added: Set<BoardId>,
+): BoardListScreen.RemoteBoards {
+    return when (remote) {
         // available = remote - added
         is BoardListScreen.RemoteBoards.Loaded -> {
             BoardListScreen.RemoteBoards.Available(
-                remoteState.boards.filter { board ->
-                    board.id !in site.boards
-                }
+                remote.boards.filter { board -> board.id !in added }
             )
         }
 
-        else -> remoteState
+        else -> remote
     }
-
-    return BoardListScreen.Content.Loaded(
-        added = site.boards.values.toList(),
-        available = availableBoards,
-    )
 }
