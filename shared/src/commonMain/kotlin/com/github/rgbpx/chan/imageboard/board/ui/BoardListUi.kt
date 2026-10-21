@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -53,7 +54,7 @@ fun BoardListUi(
             BoardListTopBar(
                 refreshEnabled = when (content) {
                     is BoardListScreen.Content.Loaded -> {
-                        content.available !is BoardListScreen.AvailableBoards.Loading
+                        content.available !is BoardListScreen.RemoteBoards.Loading
                     }
 
                     else -> false
@@ -139,7 +140,7 @@ fun BoardListUi(
                         }
 
                         when (val available = content.available) {
-                            BoardListScreen.AvailableBoards.Loading -> {
+                            BoardListScreen.RemoteBoards.Loading -> {
                                 item(key = "available:loading") {
                                     Box(
                                         modifier = Modifier
@@ -152,7 +153,7 @@ fun BoardListUi(
                                 }
                             }
 
-                            is BoardListScreen.AvailableBoards.Error -> {
+                            is BoardListScreen.RemoteBoards.Error -> {
                                 item(key = "available:error") {
                                     Text(
                                         text = available.message,
@@ -161,7 +162,20 @@ fun BoardListUi(
                                 }
                             }
 
-                            is BoardListScreen.AvailableBoards.Loaded -> {
+                            is BoardListScreen.RemoteBoards.Loaded -> {
+                                item(key = "available:processing") {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(24.dp),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        LinearProgressIndicator()
+                                    }
+                                }
+                            }
+
+                            is BoardListScreen.RemoteBoards.Available -> {
                                 when {
                                     available.boards.isEmpty() -> {
                                         item(key = "available:empty") {
@@ -281,7 +295,7 @@ private fun BoardListUiPreview() {
                 added = listOf(
                     Board(id = BoardId("b"), name = "Бред"),
                 ),
-                available = BoardListScreen.AvailableBoards.Loaded(
+                available = BoardListScreen.RemoteBoards.Available(
                     listOf(
                         Board(id = BoardId("a"), name = "Аниме"),
                     ),

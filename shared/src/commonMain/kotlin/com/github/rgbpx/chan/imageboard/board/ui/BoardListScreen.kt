@@ -27,16 +27,18 @@ data class BoardListScreen(
 
         data class Loaded(
             val added: List<Board>,
-            val available: AvailableBoards,
+            val available: RemoteBoards,
         ) : Content
     }
 
-    sealed interface AvailableBoards {
-        data object Loading : AvailableBoards
+    sealed interface RemoteBoards {
+        data object Loading : RemoteBoards
 
-        data class Error(val message: String) : AvailableBoards
+        data class Error(val message: String) : RemoteBoards
 
-        data class Loaded(val boards: List<Board>) : AvailableBoards
+        data class Loaded(val boards: List<Board>) : RemoteBoards
+
+        data class Available(val boards: List<Board>) : RemoteBoards
     }
 
     sealed interface Event : CircuitUiEvent {
