@@ -107,54 +107,74 @@ private fun presentBoards(
     reloadKey: Int,
     siteRepository: SiteRepository,
 ): BoardListScreen.Content.Loaded {
-    val engine = remember(factory, site.baseUrl, site.engineId) {
+    val engine = remember(
+        factory,
+        site.baseUrl,
+        site.engineId
+    ) {
         factory.create(site)
     }
 
-    val loadResult by produceRetainedState<BoardListScreen.AvailableBoards>(
-        initialValue = BoardListScreen.AvailableBoards.Loading,
+    val remoteBoardsState by produceRetainedState<BoardListScreen.RemoteBoards>(
+        initialValue = BoardListScreen.RemoteBoards.Loading,
         engine,
         reloadKey,
     ) {
-        value = BoardListScreen.AvailableBoards.Loading
+        value = BoardListScreen.RemoteBoards.Loading
 
-        val result = try {
-            BoardListScreen.AvailableBoards.Loaded(engine.loadBoards())
+        // Load remote boards
+        val loadedOrErrorState = try {
+            BoardListScreen.RemoteBoards.Loaded(engine.loadBoards())
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             when (val message = e.message) {
-                null -> BoardListScreen.AvailableBoards.Error(e.toString())
-                else -> BoardListScreen.AvailableBoards.Error(message)
+                null -> BoardListScreen.RemoteBoards.Error(e.toString())
+                else -> BoardListScreen.RemoteBoards.Error(message)
             }
         }
 
-        value = result
+        value = loadedOrErrorState
 
-        if (result is BoardListScreen.AvailableBoards.Loaded && result.boards.isNotEmpty()) {
-            val loadedIds = result.boards.map { board -> board.id }.toSet()
-            val missingIds = site.boards.keys - loadedIds
+        // Get remote boards from loaded state
+        val remoteBoards = when (loadedOrErrorState) {
+            is BoardListScreen.RemoteBoards.Loaded -> loadedOrErrorState.boards
+            else -> emptyList()
+        }
 
-            if (missingIds.isNotEmpty()) {
-                siteRepository.removeBoards(site.id, missingIds)
+        when {
+            remoteBoards.isNotEmpty() -> {
+                val remoteBoardIds = remoteBoards.map { board -> board.id }.toSet()
+                val staleBoardIds = site.boards.keys - remoteBoardIds
+
+                when {
+                    // Remove stale local boards (not present on remote anymore)
+                    // TODO: Cleanup errors are not handled yet. A failed write here is not caught.
+                    staleBoardIds.isNotEmpty() -> siteRepository.removeBoards(
+                        site.id,
+                        staleBoardIds
+                    )
+                }
             }
         }
     }
 
-    val available = when (val result = loadResult) {
-        is BoardListScreen.AvailableBoards.Loaded -> {
-            BoardListScreen.AvailableBoards.Loaded(
-                result.boards.filter { board ->
+    // Compute available board list
+    val availableBoards = when (val remoteState = remoteBoardsState) {
+        // available = remote - added
+        is BoardListScreen.RemoteBoards.Loaded -> {
+            BoardListScreen.RemoteBoards.Available(
+                remoteState.boards.filter { board ->
                     board.id !in site.boards
                 }
             )
         }
 
-        else -> result
+        else -> remoteState
     }
 
     return BoardListScreen.Content.Loaded(
         added = site.boards.values.toList(),
-        available = available,
+        available = availableBoards,
     )
 }
