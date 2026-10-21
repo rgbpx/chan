@@ -7,8 +7,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
-import com.github.rgbpx.chan.imageboard.engine.ImageboardEngineFactory
-import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.produceAndCollectAsRetainedState
@@ -52,11 +50,13 @@ class BoardListPresenter(
                 null -> BoardListScreen.Content.SiteNotFound
                 else -> when (val engineFactory = engineRegistry.get(siteSettings.engineId)) {
                     null -> BoardListScreen.Content.UnknownEngine
-                    else -> presentBoards(
-                        reloadKey,
-                        engineFactory,
-                        siteSettings,
-                        availableBoardsStateProducer
+                    else -> BoardListScreen.Content.Loaded(
+                        added = siteSettings.boards.values.toList(),
+                        available = availableBoardsStateProducer.produce(
+                            reloadKey,
+                            engineFactory,
+                            siteSettings,
+                        ),
                     )
                 }
             }
@@ -95,17 +95,4 @@ class BoardListPresenter(
             },
         )
     }
-}
-
-@Composable
-private fun presentBoards(
-    reloadKey: Int,
-    factory: ImageboardEngineFactory,
-    site: SiteSettings,
-    availableBoardsStateProducer: AvailableBoardsStateProducer,
-): BoardListScreen.Content.Loaded {
-    return BoardListScreen.Content.Loaded(
-        added = site.boards.values.toList(),
-        available = availableBoardsStateProducer.produce(factory, site, reloadKey),
-    )
 }

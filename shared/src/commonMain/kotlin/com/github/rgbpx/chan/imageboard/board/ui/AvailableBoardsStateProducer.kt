@@ -17,9 +17,9 @@ class AvailableBoardsStateProducer(
 ) {
     @Composable
     fun produce(
+        reloadKey: Int,
         factory: ImageboardEngineFactory,
         site: SiteSettings,
-        reloadKey: Int,
     ): BoardListScreen.RemoteBoards {
         val engine = remember(
             factory,
