@@ -12,7 +12,7 @@ import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.CancellationException
 
 @Inject
-class RemoteBoardsStateProducer(
+class AvailableBoardsStateProducer(
     private val removeStaleBoards: RemoveStaleBoardsUseCase,
 ) {
     @Composable
@@ -48,7 +48,24 @@ class RemoteBoardsStateProducer(
             removeStaleBoards(site.id, site.boards.keys, remoteBoards)
         }
 
-        return remoteBoardsState
+        return availableBoardsState(remoteBoardsState, site)
+    }
+
+    private fun availableBoardsState(
+        remoteBoardsState: BoardListScreen.RemoteBoards,
+        site: SiteSettings,
+    ): BoardListScreen.RemoteBoards {
+        return when (remoteBoardsState) {
+            is BoardListScreen.RemoteBoards.Loaded -> {
+                BoardListScreen.RemoteBoards.Available(
+                    remoteBoardsState.boards.filter { board ->
+                        board.id !in site.boards
+                    }
+                )
+            }
+
+            else -> remoteBoardsState
+        }
     }
 
     private suspend fun loadRemoteBoards(

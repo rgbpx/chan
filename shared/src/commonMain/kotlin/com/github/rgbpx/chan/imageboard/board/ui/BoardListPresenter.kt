@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
-import com.github.rgbpx.chan.imageboard.board.domain.model.BoardId
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
 import com.github.rgbpx.chan.imageboard.engine.ImageboardEngineFactory
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
@@ -27,7 +26,7 @@ class BoardListPresenter(
     @Assisted private val navigator: Navigator,
     private val siteRepository: SiteRepository,
     private val engineRegistry: EngineRegistry,
-    private val remoteBoardsStateProducer: RemoteBoardsStateProducer,
+    private val availableBoardsStateProducer: AvailableBoardsStateProducer,
 ) : Presenter<BoardListScreen.State> {
 
     @CircuitInject(BoardListScreen::class, AppScope::class)
@@ -43,27 +42,21 @@ class BoardListPresenter(
     override fun present(): BoardListScreen.State {
         val scope = rememberCoroutineScope()
         var reloadKey by rememberRetained { mutableIntStateOf(0) }
-
-        val sites by produceAndCollectAsRetainedState(
-            initial = null,
-        ) {
+        val sites by produceAndCollectAsRetainedState(initial = null) {
             siteRepository.sites
         }
 
         val content = when (val sitesMap = sites) {
             null -> BoardListScreen.Content.Loading
-
             else -> when (val siteSettings = sitesMap[screen.siteId]) {
                 null -> BoardListScreen.Content.SiteNotFound
-
                 else -> when (val engineFactory = engineRegistry.get(siteSettings.engineId)) {
                     null -> BoardListScreen.Content.UnknownEngine
-
                     else -> presentBoards(
+                        reloadKey,
                         engineFactory,
                         siteSettings,
-                        reloadKey,
-                        remoteBoardsStateProducer
+                        availableBoardsStateProducer
                     )
                 }
             }
@@ -106,31 +99,13 @@ class BoardListPresenter(
 
 @Composable
 private fun presentBoards(
+    reloadKey: Int,
     factory: ImageboardEngineFactory,
     site: SiteSettings,
-    reloadKey: Int,
-    remoteBoardsStateProducer: RemoteBoardsStateProducer,
+    availableBoardsStateProducer: AvailableBoardsStateProducer,
 ): BoardListScreen.Content.Loaded {
-    val remoteBoards = remoteBoardsStateProducer.produce(factory, site, reloadKey)
-
     return BoardListScreen.Content.Loaded(
         added = site.boards.values.toList(),
-        available = availableBoards(remoteBoards, site.boards.keys),
+        available = availableBoardsStateProducer.produce(factory, site, reloadKey),
     )
-}
-
-private fun availableBoards(
-    remote: BoardListScreen.RemoteBoards,
-    added: Set<BoardId>,
-): BoardListScreen.RemoteBoards {
-    return when (remote) {
-        // available = remote - added
-        is BoardListScreen.RemoteBoards.Loaded -> {
-            BoardListScreen.RemoteBoards.Available(
-                remote.boards.filter { board -> board.id !in added }
-            )
-        }
-
-        else -> remote
-    }
 }
