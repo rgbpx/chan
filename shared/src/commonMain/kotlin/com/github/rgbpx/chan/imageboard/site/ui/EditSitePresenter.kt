@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.github.rgbpx.chan.app.di.AppScope
+import com.github.rgbpx.chan.imageboard.board.data.BoardCache
 import com.github.rgbpx.chan.imageboard.board.ui.BoardListScreen
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
@@ -26,6 +27,7 @@ class EditSitePresenter(
     @Assisted private val navigator: Navigator,
     private val siteRepository: SiteRepository,
     private val engineRegistry: EngineRegistry,
+    private val boardCache: BoardCache,
 ) : Presenter<EditSiteScreen.State> {
 
     @CircuitInject(EditSiteScreen::class, AppScope::class)
@@ -56,6 +58,7 @@ class EditSitePresenter(
                     navigator = navigator,
                     siteRepository = siteRepository,
                     engineRegistry = engineRegistry,
+                    boardCache = boardCache,
                     site = site,
                 )
             }
@@ -69,6 +72,7 @@ private fun presentLoaded(
     navigator: Navigator,
     siteRepository: SiteRepository,
     engineRegistry: EngineRegistry,
+    boardCache: BoardCache,
     site: SiteSettings
 ): EditSiteScreen.State.Loaded {
     var name by rememberRetained(site.name) { mutableStateOf(site.name) }
