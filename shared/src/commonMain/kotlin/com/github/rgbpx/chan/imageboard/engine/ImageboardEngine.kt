@@ -4,5 +4,5 @@ import com.github.rgbpx.chan.imageboard.board.domain.model.Board
 
 interface ImageboardEngine {
     val id: EngineId
-    suspend fun loadBoards(): List<Board>
+    suspend fun loadBoards(force: Boolean = false): List<Board>
 }

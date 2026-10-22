@@ -1,5 +1,6 @@
 package com.github.rgbpx.chan.imageboard.engine.makaba
 
+import com.github.rgbpx.chan.imageboard.board.data.BoardCache
 import com.github.rgbpx.chan.imageboard.board.domain.model.Board
 import com.github.rgbpx.chan.imageboard.engine.CommonImageboardEngine
 import com.github.rgbpx.chan.imageboard.engine.EngineId
@@ -10,11 +11,13 @@ import io.ktor.client.request.get
 internal class MakabaImageboardEngine(
     httpClient: HttpClient,
     endpoints: MakabaEndpoints,
-) : CommonImageboardEngine(httpClient, endpoints) {
+    boardCache: BoardCache,
+    boardCacheKey: String,
+) : CommonImageboardEngine(httpClient, endpoints, boardCache, boardCacheKey) {
 
     override val id: EngineId = ID
 
-    override suspend fun loadBoards(): List<Board> {
+    override suspend fun loadRemoteBoards(): List<Board> {
         val dtos: List<MakabaBoardDto> = httpClient
             .get(endpoints.boards())
             .body()

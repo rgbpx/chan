@@ -36,10 +36,11 @@ class AvailableBoardsStateProducer(
         ) {
             value = BoardListScreen.RemoteBoards.Loading
 
-            val loadedOrErrorState = loadRemoteBoards(engine)
+            val forceReload = reloadKey > 0
+            val loadedOrErrorState = loadRemoteBoards(engine, forceReload)
             value = loadedOrErrorState
 
-            // Get remote boards from loaded state
+            // Get remote (or cached remote) boards from loaded state
             val remoteBoards = when (loadedOrErrorState) {
                 is BoardListScreen.RemoteBoards.Loaded -> loadedOrErrorState.boards
                 else -> emptyList()
@@ -70,9 +71,10 @@ class AvailableBoardsStateProducer(
 
     private suspend fun loadRemoteBoards(
         engine: ImageboardEngine,
+        force: Boolean,
     ): BoardListScreen.RemoteBoards {
         return try {
-            BoardListScreen.RemoteBoards.Loaded(engine.loadBoards())
+            BoardListScreen.RemoteBoards.Loaded(engine.loadBoards(force))
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {

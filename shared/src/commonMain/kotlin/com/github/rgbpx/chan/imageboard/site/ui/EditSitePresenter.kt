@@ -10,6 +10,8 @@ import com.github.rgbpx.chan.imageboard.board.ui.BoardListScreen
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteSettings
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
+import com.github.rgbpx.chan.imageboard.site.domain.usecase.DeleteSiteUseCase
+import com.github.rgbpx.chan.imageboard.site.domain.usecase.SaveSiteUseCase
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.produceAndCollectAsRetainedState
 import com.slack.circuit.retained.rememberRetained
@@ -26,6 +28,8 @@ class EditSitePresenter(
     @Assisted private val navigator: Navigator,
     private val siteRepository: SiteRepository,
     private val engineRegistry: EngineRegistry,
+    private val saveSite: SaveSiteUseCase,
+    private val deleteSite: DeleteSiteUseCase,
 ) : Presenter<EditSiteScreen.State> {
 
     @CircuitInject(EditSiteScreen::class, AppScope::class)
@@ -54,8 +58,9 @@ class EditSitePresenter(
                 else -> presentLoaded(
                     screen = screen,
                     navigator = navigator,
-                    siteRepository = siteRepository,
                     engineRegistry = engineRegistry,
+                    saveSite = saveSite,
+                    deleteSite = deleteSite,
                     site = site,
                 )
             }
@@ -67,8 +72,9 @@ class EditSitePresenter(
 private fun presentLoaded(
     screen: EditSiteScreen,
     navigator: Navigator,
-    siteRepository: SiteRepository,
     engineRegistry: EngineRegistry,
+    saveSite: SaveSiteUseCase,
+    deleteSite: DeleteSiteUseCase,
     site: SiteSettings
 ): EditSiteScreen.State.Loaded {
     var name by rememberRetained(site.name) { mutableStateOf(site.name) }
@@ -111,18 +117,11 @@ private fun presentLoaded(
                 EditSiteScreen.Event.SaveClicked -> {
                     if (canSave) {
                         scope.launch {
-                            val boards = when (engineId) {
-                                site.engineId -> site.boards
-                                else -> emptyMap()
-                            }
-
-                            siteRepository.save(
-                                site.copy(
-                                    name = name.trim(),
-                                    baseUrl = baseUrl.trim(),
-                                    engineId = engineId,
-                                    boards = boards,
-                                ),
+                            saveSite(
+                                site,
+                                newName = name,
+                                newBaseUrl = baseUrl,
+                                newEngineId = engineId
                             )
 
                             navigator.pop()
@@ -132,7 +131,8 @@ private fun presentLoaded(
 
                 EditSiteScreen.Event.DeleteClicked -> {
                     scope.launch {
-                        siteRepository.remove(screen.siteId)
+                        deleteSite(screen.siteId)
+                        
                         navigator.pop()
                     }
                 }
