@@ -13,6 +13,6 @@ data object HomeScreen : Screen {
     ) : CircuitUiState
 
     sealed interface Event : CircuitUiEvent {
-        data object SitesClicked : Event
+        data object SettingsClicked : Event
     }
 }
