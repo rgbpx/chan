@@ -26,10 +26,10 @@ fun HomeUi(
     ) {
         Button(
             onClick = {
-                state.eventSink(HomeScreen.Event.SitesClicked)
+                state.eventSink(HomeScreen.Event.SettingsClicked)
             },
         ) {
-            Text("Sites")
+            Text("Settings")
         }
     }
 }

@@ -2,7 +2,7 @@ package com.github.rgbpx.chan.feature.home.ui
 
 import androidx.compose.runtime.Composable
 import com.github.rgbpx.chan.app.di.AppScope
-import com.github.rgbpx.chan.imageboard.site.ui.SiteListScreen
+import com.github.rgbpx.chan.feature.settings.ui.AppSettingsScreen
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -25,8 +25,8 @@ class HomePresenter(
     override fun present(): HomeScreen.State {
         return HomeScreen.State { event ->
             when (event) {
-                HomeScreen.Event.SitesClicked -> {
-                    navigator.goTo(SiteListScreen)
+                HomeScreen.Event.SettingsClicked -> {
+                    navigator.goTo(AppSettingsScreen)
                 }
             }
         }
