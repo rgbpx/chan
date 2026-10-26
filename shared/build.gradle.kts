@@ -95,6 +95,10 @@ symbolCraft {
         "arrow_back",
         "refresh",
         "close",
+        "settings",
+        "menu",
+        "left_panel_close",
+        "left_panel_open",
     ) {
         style(
             weight = 400,
