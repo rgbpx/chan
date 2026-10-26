@@ -4,6 +4,7 @@ import com.github.rgbpx.chan.imageboard.board.data.BoardCache
 import com.github.rgbpx.chan.imageboard.board.domain.model.Board
 import com.github.rgbpx.chan.imageboard.engine.CommonImageboardEngine
 import com.github.rgbpx.chan.imageboard.engine.EngineId
+import com.github.rgbpx.chan.imageboard.thread.domain.model.Thread
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -23,6 +24,14 @@ internal class MakabaImageboardEngine(
             .body()
 
         return dtos.map { dto -> dto.toBoard() }
+    }
+
+    override suspend fun loadRemoteCatalog(boardId: String): List<Thread> {
+        val catalog: MakabaCatalogDto = httpClient
+            .get(endpoints.catalog(boardId))
+            .body()
+
+        return catalog.threads.map { dto -> dto.toThread() }
     }
 
     companion object {

@@ -7,4 +7,6 @@ internal class MakabaEndpoints(baseUrl: String) : ImageboardEndpoints {
     private val apiBase = "$root/api/mobile/v2"
 
     override fun boards(): String = "$apiBase/boards"
+
+    override fun catalog(boardId: String): String = "$root/$boardId/catalog.json"
 }
