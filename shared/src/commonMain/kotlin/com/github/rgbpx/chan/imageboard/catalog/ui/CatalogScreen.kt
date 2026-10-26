@@ -4,6 +4,7 @@ import com.github.rgbpx.chan.app.di.AppScope
 import com.github.rgbpx.chan.imageboard.board.domain.model.BoardId
 import com.github.rgbpx.chan.imageboard.site.domain.model.SiteId
 import com.github.rgbpx.chan.imageboard.thread.domain.model.Thread
+import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.serialization.CircuitSerializable
@@ -15,6 +16,7 @@ data class CatalogScreen(
 ) : Screen {
     data class State(
         val content: Content,
+        val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
     sealed interface Content {
@@ -38,5 +40,9 @@ data class CatalogScreen(
         data class Error(val message: String) : Threads
 
         data class Loaded(val threads: List<Thread>) : Threads
+    }
+
+    sealed interface Event : CircuitUiEvent {
+        data object SettingsClicked : Event
     }
 }

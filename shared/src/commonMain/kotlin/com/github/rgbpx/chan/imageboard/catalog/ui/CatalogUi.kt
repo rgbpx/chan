@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.rgbpx.chan.app.di.AppScope
+import com.github.rgbpx.chan.feature.drawer.ui.AdaptiveDrawer
 import com.github.rgbpx.chan.imageboard.thread.domain.model.Thread
 import com.github.rgbpx.chan.imageboard.thread.domain.model.ThreadId
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -35,65 +36,72 @@ fun CatalogUi(
 ) {
     val content = state.content
 
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = when (content) {
-                            is CatalogScreen.Content.Loaded -> content.boardName
-                            else -> "Catalog"
-                        },
-                    )
-                },
-            )
+    AdaptiveDrawer(
+        onSettingsClick = {
+            state.eventSink(CatalogScreen.Event.SettingsClicked)
         },
-    ) { contentPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding),
-            contentAlignment = Alignment.Center,
-        ) {
-            when (content) {
-                CatalogScreen.Content.Loading -> {
-                    CircularProgressIndicator()
-                }
+        modifier = modifier,
+    ) { menuButton ->
+        Scaffold(
+            modifier = modifier.fillMaxSize(),
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = when (content) {
+                                is CatalogScreen.Content.Loaded -> content.boardName
+                                else -> "Catalog"
+                            },
+                        )
+                    },
+                )
+            },
+        ) { contentPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                contentAlignment = Alignment.Center,
+            ) {
+                when (content) {
+                    CatalogScreen.Content.Loading -> {
+                        CircularProgressIndicator()
+                    }
 
-                CatalogScreen.Content.SiteNotFound -> {
-                    Text("Site not found")
-                }
+                    CatalogScreen.Content.SiteNotFound -> {
+                        Text("Site not found")
+                    }
 
-                CatalogScreen.Content.UnknownEngine -> {
-                    Text("Unknown engine")
-                }
+                    CatalogScreen.Content.UnknownEngine -> {
+                        Text("Unknown engine")
+                    }
 
-                CatalogScreen.Content.BoardNotFound -> {
-                    Text("Board not found")
-                }
+                    CatalogScreen.Content.BoardNotFound -> {
+                        Text("Board not found")
+                    }
 
-                is CatalogScreen.Content.Loaded -> {
-                    when (val threads = content.threads) {
-                        CatalogScreen.Threads.Loading -> {
-                            CircularProgressIndicator()
-                        }
+                    is CatalogScreen.Content.Loaded -> {
+                        when (val threads = content.threads) {
+                            CatalogScreen.Threads.Loading -> {
+                                CircularProgressIndicator()
+                            }
 
-                        is CatalogScreen.Threads.Error -> {
-                            Text(
-                                text = threads.message,
-                                modifier = Modifier.padding(24.dp),
-                            )
-                        }
+                            is CatalogScreen.Threads.Error -> {
+                                Text(
+                                    text = threads.message,
+                                    modifier = Modifier.padding(24.dp),
+                                )
+                            }
 
-                        is CatalogScreen.Threads.Loaded -> {
-                            when {
-                                threads.threads.isEmpty() -> {
-                                    Text("No threads")
-                                }
+                            is CatalogScreen.Threads.Loaded -> {
+                                when {
+                                    threads.threads.isEmpty() -> {
+                                        Text("No threads")
+                                    }
 
-                                else -> {
-                                    ThreadList(threads = threads.threads)
+                                    else -> {
+                                        ThreadList(threads = threads.threads)
+                                    }
                                 }
                             }
                         }
@@ -163,6 +171,7 @@ private fun Thread.title(): String {
 private fun CatalogUiPreview() {
     CatalogUi(
         state = CatalogScreen.State(
+            eventSink = {},
             content = CatalogScreen.Content.Loaded(
                 boardName = "Бред",
                 threads = CatalogScreen.Threads.Loaded(

@@ -3,10 +3,12 @@ package com.github.rgbpx.chan.imageboard.catalog.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import com.github.rgbpx.chan.app.di.AppScope
+import com.github.rgbpx.chan.feature.settings.ui.AppSettingsScreen // new
 import com.github.rgbpx.chan.imageboard.engine.EngineRegistry
 import com.github.rgbpx.chan.imageboard.site.domain.repository.SiteRepository
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.produceAndCollectAsRetainedState
+import com.slack.circuit.runtime.Navigator // new
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -15,6 +17,7 @@ import dev.zacsweers.metro.AssistedInject
 @AssistedInject
 class CatalogPresenter(
     @Assisted private val screen: CatalogScreen,
+    @Assisted private val navigator: Navigator,
     private val siteRepository: SiteRepository,
     private val engineRegistry: EngineRegistry,
     private val threadsStateProducer: ThreadsStateProducer,
@@ -23,7 +26,10 @@ class CatalogPresenter(
     @CircuitInject(CatalogScreen::class, AppScope::class)
     @AssistedFactory
     fun interface Factory {
-        fun create(@Assisted screen: CatalogScreen): CatalogPresenter
+        fun create(
+            @Assisted screen: CatalogScreen,
+            @Assisted navigator: Navigator, // new
+        ): CatalogPresenter
     }
 
     @Composable
@@ -53,6 +59,15 @@ class CatalogPresenter(
             }
         }
 
-        return CatalogScreen.State(content = content)
+        return CatalogScreen.State(
+            content = content,
+            eventSink = { event ->
+                when (event) {
+                    CatalogScreen.Event.SettingsClicked -> {
+                        navigator.goTo(AppSettingsScreen)
+                    }
+                }
+            },
+        )
     }
 }
