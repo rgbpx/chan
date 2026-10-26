@@ -31,11 +31,14 @@ import com.github.rgbpx.chan.symbols.icons.materialsymbols.icons.SettingsW400Out
 
 @Composable
 fun DrawerSidebar(
+    expandedByDefault: Boolean,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
-    var expanded by rememberSaveable { mutableStateOf(true) }
+    var expanded by rememberSaveable(expandedByDefault) {
+        mutableStateOf(expandedByDefault)
+    }
     val width by animateDpAsState(
         targetValue = when (expanded) {
             true -> 280.dp

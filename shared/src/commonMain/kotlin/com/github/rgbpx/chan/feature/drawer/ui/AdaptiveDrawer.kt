@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
+import com.github.rgbpx.chan.platform.isDesktop
 import com.github.rgbpx.chan.symbols.icons.materialsymbols.Icons
 import com.github.rgbpx.chan.symbols.icons.materialsymbols.icons.MenuW400Outlined
 import kotlinx.coroutines.launch
@@ -21,18 +22,21 @@ fun AdaptiveDrawer(
     modifier: Modifier = Modifier,
     content: @Composable (menuButton: @Composable () -> Unit) -> Unit,
 ) {
-    val isExpandedWidth = currentWindowAdaptiveInfoV2()
-        .windowSizeClass
-        .isWidthAtLeastBreakpoint(
-            widthDpBreakpoint = WIDTH_DP_EXPANDED_LOWER_BOUND
-        )
+    when (isDesktop) {
+        true -> {
+            val isExpandedWidth = currentWindowAdaptiveInfoV2()
+                .windowSizeClass
+                .isWidthAtLeastBreakpoint(
+                    widthDpBreakpoint = WIDTH_DP_EXPANDED_LOWER_BOUND
+                )
 
-    when (isExpandedWidth) {
-        true -> DrawerSidebar(
-            onSettingsClick = onSettingsClick,
-            modifier = modifier,
-        ) {
-            content(NoMenuButton)
+            DrawerSidebar(
+                expandedByDefault = isExpandedWidth,
+                onSettingsClick = onSettingsClick,
+                modifier = modifier,
+            ) {
+                content(NoMenuButton)
+            }
         }
 
         false -> {
