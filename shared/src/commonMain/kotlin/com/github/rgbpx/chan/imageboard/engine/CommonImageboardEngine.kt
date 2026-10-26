@@ -2,6 +2,7 @@ package com.github.rgbpx.chan.imageboard.engine
 
 import com.github.rgbpx.chan.imageboard.board.data.BoardCache
 import com.github.rgbpx.chan.imageboard.board.domain.model.Board
+import com.github.rgbpx.chan.imageboard.thread.domain.model.Thread
 import io.ktor.client.HttpClient
 
 abstract class CommonImageboardEngine(
@@ -12,6 +13,8 @@ abstract class CommonImageboardEngine(
 ) : BaseImageboardEngine(httpClient) {
 
     protected abstract suspend fun loadRemoteBoards(): List<Board>
+
+    protected abstract suspend fun loadRemoteCatalog(boardId: String): List<Thread>
 
     override suspend fun loadBoards(force: Boolean): List<Board> {
         return when (force) {
@@ -27,6 +30,10 @@ abstract class CommonImageboardEngine(
                 }
             }
         }
+    }
+
+    override suspend fun loadCatalog(boardId: String): List<Thread> {
+        return loadRemoteCatalog(boardId)
     }
 
     private suspend fun loadAndCacheBoards(): List<Board> {
